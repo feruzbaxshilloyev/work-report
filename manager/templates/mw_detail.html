@@ -1,0 +1,55 @@
+<!DOCTYPE html>
+<html lang="uz">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>{{ worker.ism }} {{ worker.familiya }} — Profil</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+</head>
+<body class="container mt-4">
+
+<div class="d-flex justify-content-between align-items-center mb-3 flex-wrap">
+    <h3 class="text-success mb-2">{{ worker.ism.capitalize  }} {{ worker.familiya.capitalize  }} — Ish tarixi, (ID: {{ worker.worker_id }})</h3>
+    <a href="{% url 'manager:m_chat' worker.worker_id %}" class="btn btn-outline-secondary mb-2">Xabar yuborish</a>
+    <a href="{% url 'manager:home' %}" class="btn btn-outline-secondary mb-2">⬅️ Orqaga</a>
+</div>
+
+<div class="table-responsive shadow rounded bg-white p-3">
+    <table class="table table-bordered table-hover align-middle text-center mb-0">
+        <thead class="table-light">
+            <tr>
+                <th>Sana</th>
+                <th>Umumiy mahsulot (kg)</th>
+                <th>Sifatsiz mahsulot (kg)</th>
+                <th>Narx (so'm/kg)</th>
+                <th>Hisoblangan haqi (so'm)</th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for ish in ishlar %}
+            <tr>
+                <td>{{ ish.sana }}</td>
+                <td>
+                    {{ ish.umumiy_mahsulot }} kg
+                    <br>
+                    <small class="text-muted">
+                        {% for w in ish.alohida %}
+                            {{ w }}{% if not forloop.last %}, {% endif %}
+                        {% endfor %}
+                    </small>
+                </td>
+                <td>{{ ish.sifatsiz_mahsulot }}</td>
+                <td>{{ ish.narx_per_kg }}</td>
+                <td>{{ ish.hisoblangan_haqi }}</td>
+            </tr>
+            {% empty %}
+            <tr>
+                <td colspan="5" class="text-muted">Hozircha ishlar kiritilmagan.</td>
+            </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+</div>
+
+</body>
+</html>

@@ -1,0 +1,31 @@
+<!-- worker/templates/worker/edit_profile.html -->
+<!DOCTYPE html>
+<html lang="uz">
+<head>
+    <meta charset="UTF-8">
+    <title>Profilni tahrirlash</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+</head>
+<body class="container mt-5">
+    <h2 class="mb-4">🛠 Profilni tahrirlash</h2>
+
+    <form method="POST" enctype="multipart/form-data" class="mb-4">
+        {% csrf_token %}
+        <div class="mb-3">
+            <label for="id_image" class="form-label">Profil rasmi:</label>
+            {{ image_form.image }}
+        </div>
+        <button type="submit" class="btn btn-primary">Rasmni saqlash</button>
+    </form>
+
+    <hr>
+
+    <h4>🔒 Parolni o‘zgartirish</h4>
+    <form method="POST">
+        {% csrf_token %}
+        {{ password_form.as_p }}
+        <button type="submit" class="btn btn-warning">Parolni yangilash</button>
+    </form>
+
+</body>
+</html>

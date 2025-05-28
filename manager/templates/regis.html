@@ -1,0 +1,52 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="uz">
+<head>
+    <meta charset="UTF-8" />
+    <title>Tizimga kirish</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet" />
+    <style>
+        body {
+            background-color: #f8f9fa;
+        }
+        .login-card {
+            max-width: 400px;
+            margin: 60px auto;
+            background: white;
+            padding: 30px 25px;
+            border-radius: 15px;
+            box-shadow: 0 6px 15px rgba(0,0,0,0.1);
+        }
+        .btn-group {
+            margin-top: 20px;
+            display: flex;
+            justify-content: flex-end;
+        }
+        @media (max-width: 400px) {
+            .login-card {
+                margin: 30px 15px;
+                padding: 20px 15px;
+            }
+            .btn-group {
+                justify-content: center;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="login-card">
+        <h4 class="mb-4 text-center">Ish beruvchi sifatida ro'yxatdan o'tish</h4>
+        <form method="post" novalidate>
+            {% csrf_token %}
+            {{ form.as_p }}
+            <div class="btn-group">
+                <button type="submit" class="btn btn-primary btn-lg">Ro'yxatdan o'tish</button>
+            </div>
+        </form>
+        <div class="text-center mt-3">
+          <h8>Hisobingiz bormi?</h8>  <a href="{% url 'manager:m_login' %}" class="btn btn-outline-secondary">Kirish</a>
+        </div>
+    </div>
+</body>
+</html>

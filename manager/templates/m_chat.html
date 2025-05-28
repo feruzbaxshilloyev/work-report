@@ -1,0 +1,253 @@
+<!DOCTYPE html>
+<html lang="uz">
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>Chat: {{ other_user.get_full_name }}</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet" />
+    <style>
+        body {
+            background: #f0f2f5;
+            font-family: "Segoe UI", Tahoma, Geneva, Verdana, sans-serif;
+        }
+        .chat-container {
+            max-width: 600px;
+            margin: auto;
+            background: white;
+            border-radius: 10px;
+            padding: 10px 15px 15px 15px;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+            height: 90vh;
+            display: flex;
+            flex-direction: column;
+        }
+        .chat-header {
+            padding: 10px 0;
+            border-bottom: 1px solid #ddd;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+        .chat-box {
+            flex-grow: 1;
+            overflow-y: auto;
+            padding: 10px;
+            margin-bottom: 10px;
+        }
+        .date-separator {
+            text-align: center;
+            margin: 15px 0;
+            color: #666;
+            font-size: 0.85rem;
+            position: relative;
+        }
+        .date-separator::before,
+        .date-separator::after {
+            content: "";
+            display: inline-block;
+            width: 30%;
+            height: 1px;
+            background: #ccc;
+            vertical-align: middle;
+            margin: 0 10px;
+        }
+
+        .message {
+            max-width: 75%;
+            padding: 10px 15px;
+            margin-bottom: 10px;
+            border-radius: 20px;
+            position: relative;
+            word-wrap: break-word;
+            font-size: 0.9rem;
+            line-height: 1.3;
+            clear: both;
+        }
+        .message.sent {
+            background-color: #007bff;
+            color: white;
+            margin-left: auto;
+            border-bottom-right-radius: 4px;
+        }
+        .message.received {
+            background-color: green;
+            color: #050505;
+            margin-right: auto;
+            border-bottom-left-radius: 10px;
+        }
+
+        /* Galichka (✓) uchun */
+        .checkmarks {
+            position: absolute;
+            bottom: 5px;
+            right: 10px;
+            font-size: 0.75rem;
+            color: rgba(255, 0, 0, 0.7);
+        }
+        .message.received .checkmarks {
+            color: rgba(255, 0, 0, 0.7);
+            right: auto;
+            left: 10px;
+            bottom: 5px;
+        }
+        .checkmark-single::after {
+            content: "✓";
+            margin-left: 2px;
+        }
+        .checkmark-double::after {
+            content: "✓✓";
+            margin-left: 2px;
+            letter-spacing: -6px;
+        }
+        .checkmark-double.read {
+            color: #f44336;  /* klassik qizil */
+        }
+
+        /* Vaqt uchun kichik matn */
+        .message-time {
+            display: block;
+            font-size: 0.7rem;
+            color: #999;
+            margin-top: 5px;
+            text-align: left;
+        }
+
+        /* Forma */
+        form.input-group {
+            display: flex;
+            gap: 5px;
+        }
+        form input[type="text"] {
+            flex-grow: 1;
+            border-radius: 20px;
+            padding: 10px 15px;
+            border: 1px solid #ccc;
+        }
+        form button {
+            border-radius: 20px;
+            padding: 10px 15px;
+        }
+
+        /* Mobile uchun */
+        @media (max-width: 576px) {
+            .chat-container {
+                height: 100vh;
+                border-radius: 0;
+                padding: 10px;
+            }
+            .message {
+                max-width: 90%;
+                font-size: 1rem;
+            }
+        }
+    </style>
+</head>
+<body>
+
+<div class="chat-container">
+    <div class="chat-header">
+        <h5>Chat: {{ worker }}</h5>
+        <a href="{% url 'manager:m_chat_u' %}" class="btn btn-outline-secondary btn-sm">⬅️ Orqaga</a>
+    </div>
+
+    <div class="chat-box" id="chat-box">
+        {% regroup messages by created_at.date as date_groups %}
+
+        {% for date_group in date_groups %}
+            <div class="date-separator">{{ date_group.grouper|date:"d M Y, l" }}</div>
+
+            {% for msg in date_group.list %}
+                <div class="message {% if msg.sender == request.user.username %}sent{% else %}received{% endif %}" data-msg-id="{{ msg.id }}" data-is-read="{{ msg.is_read|lower }}">
+                    {{ msg.message|linebreaksbr }}
+                    <span class="message-time">{{ msg.created_at|date:"H:i" }}</span>
+
+                    <span class="checkmarks
+                        {% if msg.sender == request.user.username %}
+                            {% if msg.is_read %}
+                                checkmark-double read
+                            {% else %}
+                                checkmark-single
+                            {% endif %}
+                        {% endif %}
+                    "></span>
+
+                    {% if msg.sender == request.user.username %}
+                    <div class="msg-actions">
+                        <a href="{% url 'manager:edit_message' msg.id %}" class="btn-edit">✏️</a>
+                        <a href="{% url 'manager:delete_message' msg.id %}" class="btn-delete">🗑️</a>
+                    </div>
+                    {% endif %}
+                </div>
+            {% endfor %}
+        {% endfor %}
+    </div>
+
+    <form method="post" class="input-group" autocomplete="off">
+        {% csrf_token %}
+        <input type="text" name="message" placeholder="Xabar yozing..." required autofocus />
+        <button type="submit" class="btn btn-primary">Yuborish</button>
+    </form>
+</div>
+
+<script>
+    // Scroll oxirgi xabarga avtomatik tushishi uchun
+    document.addEventListener("DOMContentLoaded", function() {
+        var chatBox = document.getElementById('chat-box');
+        if(chatBox){
+            chatBox.scrollTop = chatBox.scrollHeight;
+        }
+
+        const messages = document.querySelectorAll('.message');
+        messages.forEach(function(msg) {
+            // Xabarni ko'rishni aniqlash
+            if (!msg.classList.contains('sent') && msg.dataset.isRead === 'false') {
+                msg.addEventListener('click', function() {
+                    markAsRead(msg.dataset.msgId);
+                });
+            }
+        });
+
+        // Xabarni ko'rilgan deb belgilash
+        function markAsRead(messageId) {
+            fetch(`/manager/mark_as_read/${messageId}/`, {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                    'X-CSRFToken': getCSRFToken(),
+                },
+            })
+            .then(res => {
+                if (res.ok) {
+                    const msgDiv = document.querySelector(`.message[data-msg-id="${messageId}"]`);
+                    if (msgDiv) {
+                        msgDiv.dataset.isRead = 'true';
+                        const checkmarks = msgDiv.querySelector('.checkmarks');
+                        if (checkmarks) {
+                            checkmarks.classList.remove('checkmark-single');
+                            checkmarks.classList.add('checkmark-double', 'read');
+                        }
+                    }
+                }
+            })
+            .catch(err => {
+                console.error("Xatolik yuz berdi:", err);
+            });
+        }
+
+        // CSRF token olish funksiyasi
+        function getCSRFToken() {
+            const name = 'csrftoken';
+            const cookies = document.cookie.split(';');
+            for(let i=0; i<cookies.length; i++){
+                let c = cookies[i].trim();
+                if(c.startsWith(name + '=')){
+                    return decodeURIComponent(c.substring(name.length + 1));
+                }
+            }
+            return '';
+        }
+    });
+</script>
+
+</body>
+</html>

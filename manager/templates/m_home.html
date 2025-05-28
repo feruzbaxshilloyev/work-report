@@ -1,0 +1,165 @@
+<!DOCTYPE html>
+<html lang="uz">
+<head>
+    <meta charset="UTF-8">
+    <title>Ish nazorati</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <style>
+        body {
+            background: linear-gradient(135deg, #e0e7ff, #f5f7fa); /* Gradient fon */
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            min-height: 100vh;
+            padding: 20px 0;
+        }
+        .header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 20px;
+            flex-wrap: wrap;
+            gap: 10px;
+        }
+        .header h2 {
+            color: #2c3e50;
+            font-weight: 600;
+            margin: 0;
+        }
+        .btn-group a {
+            margin-left: 5px;
+            border-radius: 25px;
+            padding: 8px 15px;
+            font-size: 0.9rem;
+            transition: background 0.3s ease, transform 0.2s ease;
+        }
+        .btn-group a:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 2px 6px rgba(0, 0, 0, 0.1);
+        }
+        .btn-info {
+            background: #17a2b8;
+            color: white;
+        }
+        .btn-info:hover {
+            background: #138496;
+        }
+        .btn-success {
+            background: #28a745;
+            color: white;
+        }
+        .btn-success:hover {
+            background: #218838;
+        }
+        .btn-outline-primary {
+            color: #007bff;
+            border-color: #007bff;
+        }
+        .btn-outline-primary:hover {
+            background: #007bff;
+            color: white;
+        }
+        table {
+            background: white;
+            border-radius: 10px;
+            overflow: hidden;
+        }
+        th, td {
+            vertical-align: middle;
+        }
+        .table-hover tbody tr:hover {
+            background-color: #f8f9fa;
+            transition: background-color 0.2s ease;
+        }
+        .small {
+            font-size: 0.75rem;
+        }
+        .no-data {
+            background: rgba(255, 255, 255, 0.8);
+            border-radius: 10px;
+            padding: 20px;
+        }
+
+        /* Mobil moslashuvchanlik */
+        @media (max-width: 768px) {
+            .header {
+                flex-direction: column;
+                align-items: flex-start;
+            }
+            .header h2 {
+                font-size: 1.5rem;
+                margin-bottom: 10px;
+            }
+            .btn-group a {
+                width: 100%;
+                margin: 5px 0;
+                font-size: 1rem;
+                padding: 10px;
+            }
+            table {
+                font-size: 0.9rem;
+            }
+            td, th {
+                padding: 8px;
+            }
+            .table-responsive {
+                overflow-x: auto;
+            }
+        }
+    </style>
+</head>
+<body class="container mt-5">
+    <div class="header">
+        <h2 class="text-primary">Sizga biriktirilgan ishchilar nazorati</h2>
+        <div class="btn-group">
+            <a href="{% url 'manager:profil' %}" class="btn btn-outline-primary">Profil</a>
+            <a href="{% url 'manager:daily_reports' %}" class="btn btn-outline-primary">Kunlik hisobot</a>
+            <a href="{% url 'manager:create_message' %}" class="btn btn-outline-primary">Xabar yuborish</a>
+            <a href="{% url 'manager:add_worker' manager.id %}" class="btn btn-sm btn-info">Ishchi qo‘shish</a>
+            <a href="{% url 'manager:m_chat_u' %}" class="btn btn-outline-primary">Chat</a>
+        </div>
+    </div>
+
+    <div class="table-responsive">
+        <table class="table table-bordered table-hover table-striped shadow">
+            <thead class="table-primary text-center">
+                <tr>
+                    <th>#</th>
+                    <th>ID</th>
+                    <th>Ismi</th>
+                    <th>Familiyasi</th>
+                    <th>Jami mahsulot (kg)</th>
+                    <th>Sifatsiz mahsulot (kg)</th>
+                    <th>Umumiy xizmat haqi (so'm)</th>
+                    <th>Amal</th>
+                </tr>
+            </thead>
+            <tbody class="text-center">
+                {% for stat in worker_stats %}
+                <tr>
+                    <td>{{ forloop.counter }}</td>
+                    <td>{{ stat.worker.worker_id }}</td>
+                    <td>{{ stat.worker.ism.capitalize }}</td>
+                    <td>{{ stat.worker.familiya.capitalize }}</td>
+                    <td>{{ stat.mahsulot }}
+                        <br>
+                        <small class="text-muted">
+                            {{ stat.vaznlar }} kun
+                        </small>
+                    </td>
+                    <td>{{ stat.sifatsiz }}</td>
+                    <td>{{ stat.kunlik_haqi }}</td>
+                    <td>
+                        <a href="{% url 'manager:worker_detail' stat.worker.id %}" class="btn btn-sm btn-info">Ko‘rish</a>
+                        <a href="{% url 'manager:m_chat' stat.worker.worker_id %}" class="btn btn-sm btn-info">Xabar yozish</a>
+                        <a href="{% url 'manager:add_daily_work' %}" class="btn btn-sm btn-success">Ish qo‘shish</a>
+                    </td>
+                </tr>
+                {% empty %}
+                <tr>
+                    <td colspan="8" class="text-center no-data">Sizda hozircha ishchi yo‘q.</td>
+                </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+    </div>
+</body>
+</html>

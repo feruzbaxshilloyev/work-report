@@ -1,0 +1,130 @@
+<!DOCTYPE html>
+<html lang="uz">
+<head>
+    <meta charset="UTF-8">
+    <title>Yangi xabar yozish</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <style>
+        body {
+            background: linear-gradient(135deg, #e0e7ff, #f5f7fa); /* Gradient fon */
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            min-height: 100vh;
+            padding: 20px 0;
+        }
+        .container {
+            max-width: 600px;
+        }
+        h2 {
+            color: #2c3e50;
+            font-weight: 600;
+            margin-bottom: 20px;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+        .form-container {
+            background: white;
+            border-radius: 15px;
+            padding: 30px;
+            box-shadow: 0 10px 25px rgba(0, 0, 0, 0.1);
+            transition: transform 0.3s ease;
+        }
+        .form-container:hover {
+            transform: translateY(-5px);
+        }
+        .mb-3 label {
+            color: #34495e;
+            font-weight: 500;
+        }
+        .form-control, .form-control:focus {
+            border-radius: 10px;
+            border: 1px solid #ced4da;
+            box-shadow: none;
+            transition: border-color 0.3s ease;
+        }
+        .form-control:focus {
+            border-color: #007bff;
+        }
+        textarea.form-control {
+            resize: vertical;
+            min-height: 120px;
+        }
+        .btn {
+            border-radius: 25px;
+            padding: 10px 20px;
+            font-size: 1rem;
+            transition: all 0.3s ease;
+        }
+        .btn-success {
+            background: linear-gradient(90deg, #28a745, #34c759);
+            border: none;
+            color: white;
+        }
+        .btn-success:hover {
+            background: linear-gradient(90deg, #218838, #2ba84a);
+            box-shadow: 0 6px 12px rgba(0, 0, 0, 0.2);
+            transform: translateY(-2px);
+        }
+        .btn-secondary {
+            background: linear-gradient(90deg, #6c757d, #adb5bd);
+            border: none;
+            color: white;
+        }
+        .btn-secondary:hover {
+            background: linear-gradient(90deg, #5a6268, #8f959c);
+            box-shadow: 0 6px 12px rgba(0, 0, 0, 0.2);
+            transform: translateY(-2px);
+        }
+        .btn-group {
+            display: flex;
+            gap: 10px;
+            margin-top: 20px;
+        }
+
+        /* Mobil moslashuvchanlik */
+        @media (max-width: 576px) {
+            .container {
+                padding: 10px;
+            }
+            .form-container {
+                padding: 20px;
+            }
+            h2 {
+                font-size: 1.5rem;
+            }
+            .form-control {
+                font-size: 0.9rem;
+            }
+            .btn {
+                width: 100%;
+                font-size: 1rem;
+                padding: 12px;
+            }
+            .btn-group {
+                flex-direction: column;
+            }
+        }
+    </style>
+</head>
+<body class="container mt-5">
+    <div class="form-container">
+        <h2>📝 Yangi xabar yuborish</h2>
+        <form method="POST" class="mt-4">
+            {% csrf_token %}
+            <div class="mb-3">
+                {{ form.sarlavha.label_tag }}
+                {{ form.sarlavha }}
+            </div>
+            <div class="mb-3">
+                {{ form.matn.label_tag }}
+                {{ form.matn }}
+            </div>
+            <div class="btn-group">
+                <button type="submit" class="btn btn-success">📤 Yuborish</button>
+                <a href="{% url 'manager:home' %}" class="btn btn-secondary">⬅️ Orqaga</a>
+            </div>
+        </form>
+    </div>
+</body>
+</html>

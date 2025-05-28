@@ -1,0 +1,28 @@
+<!DOCTYPE html>
+<html lang="uz">
+<head>
+    <meta charset="UTF-8">
+    <title>Ishchi Home</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+</head>
+<body class="container mt-5">
+    <h2 class="mb-4">Xush kelibsiz, {{ user.username }}!</h2>
+
+    <div class="card">
+        <div class="card-header">
+            Profilingiz
+        </div>
+        <div class="card-body">
+            <h5 class="card-title">Ishchi: {{ worker.ism.capitalize }} {{ worker.familiya.capitalize }}</h5>
+            <p class="card-text">ID: {{ worker.worker_id }}</p>
+            <p class="card-text">Parol: {{ worker.password }}</p>
+            <a href="{% url 'worker:worker_profile' worker.worker_id %}" class="btn btn-primary">Bosh sahifaga o'tish</a>
+            <a href="{% url 'worker:update_pass' worker.worker_id %}" class="btn btn-primary">Parolni o'zgartirish</a>
+        </div>
+    </div>
+
+    <div class="mt-4">
+        <a href="{% url 'worker:worker_logout' worker.worker_id %}" class="btn btn-danger">Chiqish</a>
+    </div>
+</body>
+</html>

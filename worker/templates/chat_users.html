@@ -1,0 +1,147 @@
+<!DOCTYPE html>
+<html lang="uz">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Yozishmalar ro‘yxati</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <style>
+        body {
+            background: linear-gradient(to right, #6b7280, #d1d5db);
+            min-height: 100vh;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            padding: 2rem 0;
+        }
+        .container {
+            max-width: 700px;
+            width: 100%;
+        }
+        .card {
+            border-radius: 1.5rem;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.2);
+            background: #ffffff;
+            animation: fadeIn 1s ease-in-out;
+            padding: 2rem;
+        }
+        h2 {
+            font-weight: bold;
+            color: #1f2937;
+            animation: slideIn 0.8s ease-out;
+            margin-bottom: 1.5rem;
+        }
+        .btn-secondary {
+            border-radius: 0.75rem;
+            padding: 0.7rem 1.5rem;
+            background: #6b7280;
+            border: none;
+            transition: transform 0.3s ease, box-shadow 0.3s ease;
+            position: relative;
+            overflow: hidden;
+        }
+        .btn-secondary:hover {
+            background: #4b5563;
+            transform: translateY(-3px);
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.2);
+        }
+        .btn-secondary::before {
+            content: '';
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            width: 0;
+            height: 0;
+            background: rgba(255, 255, 255, 0.3);
+            border-radius: 50%;
+            transform: translate(-50%, -50%);
+            transition: width 0.6s ease, height 0.6s ease;
+        }
+        .btn-secondary:hover::before {
+            width: 200px;
+            height: 200px;
+        }
+        .list-group-item {
+            border-radius: 0.75rem;
+            margin-bottom: 0.5rem;
+            padding: 1rem;
+            transition: all 0.3s ease;
+            background: #f8f9fa;
+            border: 1px solid #e5e7eb;
+        }
+        .list-group-item:hover {
+            transform: translateY(-3px);
+            background: #e5e7eb;
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.1);
+        }
+        .list-group-item-action {
+            color: #1f2937;
+            font-weight: 500;
+        }
+        .alert {
+            border-radius: 0.75rem;
+            animation: slideIn 0.5s ease-out;
+            background: #dbeafe;
+            color: #1e40af;
+        }
+        /* Animations */
+        @keyframes fadeIn {
+            0% { opacity: 0; transform: scale(0.95); }
+            100% { opacity: 1; transform: scale(1); }
+        }
+        @keyframes slideIn {
+            0% { opacity: 0; transform: translateY(-20px); }
+            100% { opacity: 1; transform: translateY(0); }
+        }
+        @keyframes pulse {
+            0% { transform: scale(1); }
+            50% { transform: scale(1.05); }
+            100% { transform: scale(1); }
+        }
+        /* Responsive adjustments */
+        @media (max-width: 576px) {
+            .card {
+                padding: 1.5rem;
+            }
+            h2 {
+                font-size: 1.5rem;
+            }
+            .list-group-item {
+                font-size: 0.9rem;
+                padding: 0.8rem;
+            }
+            .btn-secondary {
+                font-size: 0.9rem;
+                padding: 0.6rem 1rem;
+            }
+        }
+    </style>
+</head>
+<body class="container py-5">
+    <div class="card">
+        <h2>💬 Chatlar</h2>
+        <a href="javascript:history.back()" class="btn btn-secondary mb-3">🔙 Orqaga</a>
+
+        <div class="list-group">
+            {% for user in users %}
+            <a href="{% url 'worker:chat' user.id worker.worker_id %}" class="list-group-item chat-user list-group-item-action">
+                👤 {{ user.username }}
+            </a>
+            {% empty %}
+            <div class="alert alert-info">Hozircha hech kim bilan yozishma yo‘q.</div>
+            {% endfor %}
+        </div>
+    </div>
+
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+    <script>
+        // Ro‘yxat elementlari va tugmaga puls animatsiyasi qo‘shish
+        document.querySelectorAll('.list-group-item, .btn').forEach(item => {
+            item.style.animation = 'pulse 1.5s ease-in-out';
+            item.addEventListener('animationend', () => {
+                item.style.animation = '';
+            });
+        });
+    </script>
+</body>
+</html>
