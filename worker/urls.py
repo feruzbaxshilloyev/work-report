@@ -12,7 +12,9 @@ urlpatterns = [
     path('chat/<int:receiver_id>/<int:w_id>/', chat_view, name='chat'),
     path('chat-users/<int:worker_id>', chat_user_list, name='chat_users'),
     path('update-password/<int:worker_id>/', update_password, name='update_pass'),
-
-    # path('messages/<int:id>/', message_detail, name='message_detail'),
+    path('chat/w-w/<int:w_id>/<int:id>/', w_chat, name='ww_chat'),
+    path('w_search/<int:worker_id>/', w_search, name='chat_search'),
+    path('w_tolov_tarix/<int:id>/', tolov_tarixi, name='tolov_tarix'),
+    path('mes_d/<int:id>/<int:d>/', message_detail, name='m_d'),
 
 ]

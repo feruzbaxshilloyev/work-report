@@ -8,7 +8,7 @@ urlpatterns = [
     path('manager-login/', manager_login, name='m_login'),
     path('profil/', manager_profile, name='profil'),
     path('logout/', logout_view, name='logout'),
-    path('add-worker/<int:id>/', add_worker, name='add_worker'),
+    path('add-worker/', add_worker, name='add_worker'),
     path('worker-list/', worker_list, name='worker_list'),
     path('', home, name='home'),
     path('add-daily-work/', add_daily_work, name='add_daily_work'),
@@ -21,5 +21,7 @@ urlpatterns = [
     path('message-edit/<int:message_id>/', edit_message, name='edit_message'),
     path('mark_as_read/<int:message_id>/', mark_as_read, name='mark_as_read'),
     path('message-delete/<int:message_id>/', delete_message, name='delete_message'),
+    path('tolov/', add_payment, name='tolov'),
+    path('tolow/<int:w_id>/', tolow, name='tolow'),
 
 ]

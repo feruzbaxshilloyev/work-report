@@ -12,6 +12,10 @@ class Worker(models.Model):
     password = models.CharField(max_length=128)
     image = models.ImageField(upload_to='worker_images/', blank=True, null=True)
     is_login = models.BooleanField(default=False)
+    ishlangan = models.PositiveIntegerField(default=0, blank=True, null=True)
+    tolangan = models.PositiveIntegerField(default=0, blank=True, null=True)
+    qoldiq = models.PositiveIntegerField(default=0, blank=True, null=True)
+    unread = models.PositiveIntegerField(default=0, blank=True, null=True)
 
     def save(self, *args, **kwargs):
         if not self.worker_id:
@@ -33,7 +37,6 @@ class DailyWork(models.Model):
     sana = models.DateField(default=timezone.now, blank=True, null=True)
     umumiy_mahsulot = models.CharField(max_length=255)
     sifatsiz_mahsulot = models.DecimalField(max_digits=10, decimal_places=2, default=0)
-    alohida = []
     narx_per_kg = models.DecimalField(max_digits=10, decimal_places=2)
     hisoblangan_haqi = models.DecimalField(max_digits=10, decimal_places=2, blank=True)
 

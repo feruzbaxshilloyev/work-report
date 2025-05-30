@@ -2,54 +2,277 @@
 <html lang="uz">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>{{ worker.ism }} {{ worker.familiya }} — Profil</title>
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
+    <style>
+        body {
+            background: linear-gradient(135deg, #4b6cb7, #182848);
+            min-height: 100vh;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            color: #1e293b;
+            padding: 2rem 1rem;
+        }
+        .container {
+            max-width: 1200px;
+        }
+        .card {
+            border-radius: 1.8rem;
+            box-shadow: 0 15px 40px rgba(0, 0, 0, 0.3);
+            background: #ffffff;
+            margin-bottom: 2rem;
+            overflow: hidden;
+            animation: fadeIn 1.2s ease-in-out;
+        }
+        .card-header {
+            background: linear-gradient(90deg, #3b82f6, #60a5fa);
+            color: #ffffff;
+            border-radius: 1.8rem 1.8rem 0 0;
+            padding: 1rem;
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+        .card-header:hover {
+            background: linear-gradient(90deg, #2563eb, #3b82f6);
+        }
+        .card-header h5 {
+            margin: 0;
+            font-weight: 600;
+        }
+        .btn-primary {
+            background: linear-gradient(90deg, #3b82f6, #60a5fa);
+            border: none;
+            border-radius: 0.75rem;
+            padding: 0.8rem 1.5rem;
+            transition: all 0.3s ease;
+        }
+        .btn-primary:hover {
+            background: linear-gradient(90deg, #2563eb, #3b82f6);
+            transform: translateY(-3px);
+            box-shadow: 0 8px 20px rgba(59, 130, 246, 0.4);
+        }
+        .btn-secondary {
+            background: linear-gradient(90deg, #6b7280, #9ca3af);
+            border: none;
+            color: #ffffff;
+            border-radius: 0.75rem;
+            padding: 0.8rem 1.5rem;
+            transition: all 0.3s ease;
+        }
+        .btn-secondary:hover {
+            background: linear-gradient(90deg, #4b5563, #6b7280);
+            transform: translateY(-3px);
+            box-shadow: 0 8px 20px rgba(107, 114, 128, 0.4);
+        }
+        .table {
+            margin-bottom: 0;
+            border-radius: 0.75rem;
+            overflow: hidden;
+        }
+        .table thead {
+            background: #f1f5f9;
+            color: #1e293b;
+        }
+        .table th, .table td {
+            vertical-align: middle;
+            padding: 0.75rem;
+            border-color: #e2e8f0;
+        }
+        .table tbody tr {
+            transition: background 0.2s ease;
+        }
+        .table tbody tr:hover {
+            background: #f8fafc;
+        }
+        .table-responsive {
+            border-radius: 0.75rem;
+            overflow-x: auto;
+        }
+        .accordion-button {
+            background: #ffffff;
+            color: #1e293b;
+            font-weight: 600;
+            border: none;
+        }
+        .accordion-button:not(.collapsed) {
+            background: linear-gradient(90deg, #3b82f6, #60a5fa);
+            color: #ffffff;
+        }
+        .accordion-button:focus {
+            box-shadow: none;
+        }
+        @keyframes fadeIn {
+            0% { opacity: 0; transform: scale(0.9); }
+            100% { opacity: 1; transform: scale(1); }
+        }
+        @media (max-width: 768px) {
+            .d-flex {
+                flex-direction: column;
+                gap: 0.5rem;
+            }
+            .btn {
+                width: 100%;
+                text-align: center;
+            }
+            .table th, .table td {
+                font-size: 0.9rem;
+                padding: 0.5rem;
+            }
+            h3 {
+                font-size: 1.5rem;
+            }
+            .card {
+                padding: 1.5rem;
+            }
+        }
+        @media (max-width: 576px) {
+            .table-responsive {
+                font-size: 0.85rem;
+            }
+            .table th, .table td {
+                padding: 0.4rem;
+            }
+            .card {
+                padding: 1rem;
+            }
+        }
+    </style>
 </head>
-<body class="container mt-4">
+<body>
+    <div class="container">
+        <div class="card mb-4">
+            <div class="card-body">
+                <div class="d-flex justify-content-between align-items-center mb-3 flex-wrap">
+                    <h3 class="text-success mb-2">
+                        {{ worker.ism|capfirst }} {{ worker.familiya|capfirst }} — Ish tarixi (ID: {{ worker.worker_id }})
+                    </h3>
+                    <div class="d-flex gap-2 flex-wrap">
+                        <a href="{% url 'manager:m_chat' worker.worker_id %}" class="btn btn-primary">
+                            <i class="fab fa-telegram"></i> Xabar yuborish
+                        </a><a href="{% url 'manager:tolow' worker.worker_id %}" class="btn btn-primary">
+                            <i class="fas fa-money-check-alt"></i> To'lov kiritish
+                        </a>
+                        <a href="{% url 'manager:home' %}" class="btn btn-secondary">
+                            <i class="fas fa-arrow-left"></i> Orqaga
+                        </a>
+                    </div>
+                </div>
 
-<div class="d-flex justify-content-between align-items-center mb-3 flex-wrap">
-    <h3 class="text-success mb-2">{{ worker.ism.capitalize  }} {{ worker.familiya.capitalize  }} — Ish tarixi, (ID: {{ worker.worker_id }})</h3>
-    <a href="{% url 'manager:m_chat' worker.worker_id %}" class="btn btn-outline-secondary mb-2">Xabar yuborish</a>
-    <a href="{% url 'manager:home' %}" class="btn btn-outline-secondary mb-2">⬅️ Orqaga</a>
-</div>
+                <div class="table-responsive">
+                    <table class="table table-bordered text-center">
+                        <thead class="table-light">
+                            <tr>
+                                <th>Umumiy ishlangan (so‘m)</th>
+                                <th>To‘langan (so‘m)</th>
+                                <th>Qoldiq (so‘m)</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr>
+                                <td><strong>{{ worker.ishlangan|floatformat:2 }}</strong></td>
+                                <td><strong>{{ worker.tolangan|floatformat:2 }}</strong></td>
+                                <td><strong>{{ worker.qoldiq|floatformat:2 }}</strong></td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
 
-<div class="table-responsive shadow rounded bg-white p-3">
-    <table class="table table-bordered table-hover align-middle text-center mb-0">
-        <thead class="table-light">
-            <tr>
-                <th>Sana</th>
-                <th>Umumiy mahsulot (kg)</th>
-                <th>Sifatsiz mahsulot (kg)</th>
-                <th>Narx (so'm/kg)</th>
-                <th>Hisoblangan haqi (so'm)</th>
-            </tr>
-        </thead>
-        <tbody>
-            {% for ish in ishlar %}
-            <tr>
-                <td>{{ ish.sana }}</td>
-                <td>
-                    {{ ish.umumiy_mahsulot }} kg
-                    <br>
-                    <small class="text-muted">
-                        {% for w in ish.alohida %}
-                            {{ w }}{% if not forloop.last %}, {% endif %}
-                        {% endfor %}
-                    </small>
-                </td>
-                <td>{{ ish.sifatsiz_mahsulot }}</td>
-                <td>{{ ish.narx_per_kg }}</td>
-                <td>{{ ish.hisoblangan_haqi }}</td>
-            </tr>
-            {% empty %}
-            <tr>
-                <td colspan="5" class="text-muted">Hozircha ishlar kiritilmagan.</td>
-            </tr>
-            {% endfor %}
-        </tbody>
-    </table>
-</div>
+        <div class="accordion" id="workerAccordion">
+            <!-- Kundalik ishlar jadvali -->
+            <div class="card">
+                <div class="card-header" id="headingWork">
+                    <h5 class="mb-0">
+                        <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#collapseWork" aria-expanded="false" aria-controls="collapseWork">
+                            <i class="fas fa-briefcase me-2"></i> Ish tarixi
+                        </button>
+                    </h5>
+                </div>
+                <div id="collapseWork" class="accordion-collapse collapse" aria-labelledby="headingWork" data-bs-parent="#workerAccordion">
+                    <div class="card-body p-0">
+                        <div class="table-responsive">
+                            <table class="table table-bordered table-hover text-center">
+                                <thead class="table-light">
+                                    <tr>
+                                        <th>Sana</th>
+                                        <th>Umumiy mahsulot (kg)</th>
+                                        <th>Sifatsiz mahsulot (kg)</th>
+                                        <th>Narx (so‘m/kg)</th>
+                                        <th>Hisoblangan haqi (so‘m)</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    {% for ish in ishlar %}
+                                    <tr>
+                                        <td>{{ ish.sana|date:"d-m-Y" }}</td>
+                                        <td>
+                                            {{ ish.umumiy_mahsulot|floatformat:2 }} kg
+                                            {% if ish.alohida %}
+                                            <br>
+                                            <small class="text-muted">
+                                                {% for w in ish.alohida %}
+                                                    {{ w }}{% if not forloop.last %}, {% endif %}
+                                                {% endfor %}
+                                            </small>
+                                            {% endif %}
+                                        </td>
+                                        <td>{{ ish.sifatsiz_mahsulot|floatformat:2 }}</td>
+                                        <td>{{ ish.narx_per_kg|floatformat:2 }}</td>
+                                        <td>{{ ish.hisoblangan_haqi|floatformat:2 }}</td>
+                                    </tr>
+                                    {% empty %}
+                                    <tr>
+                                        <td colspan="5" class="text-muted">Hozircha ishlar kiritilmagan.</td>
+                                    </tr>
+                                    {% endfor %}
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+                </div>
+            </div>
 
+            <!-- To‘lovlar jadvali -->
+            <div class="card">
+                <div class="card-header" id="headingPayment">
+                    <h5 class="mb-0">
+                        <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#collapsePayment" aria-expanded="false" aria-controls="collapsePayment">
+                            <i class="fas fa-money-check-alt me-2"></i> To‘lov tarixi
+                        </button>
+                    </h5>
+                </div>
+                <div id="collapsePayment" class="accordion-collapse collapse" aria-labelledby="headingPayment" data-bs-parent="#workerAccordion">
+                    <div class="card-body p-0">
+                        <div class="table-responsive">
+                            <table class="table table-bordered table-hover text-center">
+                                <thead class="table-light">
+                                    <tr>
+                                        <th>Sana</th>
+                                        <th>Summa (so‘m)</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    {% for tolov in tolovlar %}
+                                    <tr>
+                                        <td>{{ tolov.sana|date:"d-m-Y" }}</td>
+                                        <td>{{ tolov.summa|floatformat:2 }}</td>
+                                    </tr>
+                                    {% empty %}
+                                    <tr>
+                                        <td colspan="2" class="text-muted">Hozircha to‘lovlar kiritilmagan.</td>
+                                    </tr>
+                                    {% endfor %}
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
 </body>
 </html>

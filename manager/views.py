@@ -6,10 +6,11 @@ from django.shortcuts import render, redirect, get_object_or_404
 from django.contrib.auth import login, authenticate, logout
 from django.contrib.auth.forms import AuthenticationForm, UserChangeForm
 from django.contrib.auth.models import User
-from .forms import ManagerRegisterForm, ManagerLoginForm, MessageForm, ProfileUpdateForm
+from .forms import ManagerRegisterForm, ManagerLoginForm, MessageForm, MonthlyPaymentForm, TolowForm, \
+    ChangeManagerProfileForm, CustomSetPasswordForm
 from django.contrib import messages
 from worker.models import Worker, DailyWork, ChatMessage
-from .models import ManagerProfile
+from .models import ManagerProfile, MonthlyPayment
 from django.utils import timezone
 from django.db.models import Sum
 from django.utils.dateparse import parse_date
@@ -43,7 +44,11 @@ def manager_login(request):
 
 @login_required
 def manager_profile(request):
-    return render(request, 'm_profil.html')
+    manager = ManagerProfile.objects.filter(user=request.user).first()
+    ctx = {
+        'manager': manager
+    }
+    return render(request, 'm_profil.html', ctx)
 
 
 @login_required
@@ -52,20 +57,16 @@ def logout_view(request):
     return redirect('profil:sorov')
 
 
-def add_worker(request, id):
+def add_worker(request):
     if request.method == 'POST':
         ism = request.POST.get('ism')
         familiya = request.POST.get('familiya')
-        manager = ManagerProfile.objects.filter(id=id).first()
-
         try:
-            print(0)
             worker = Worker.objects.create(
                 ism=ism,
                 familiya=familiya,
                 manager=request.user
             )
-            print(1)
             worker.save()
 
             messages.success(request, f"Ishchi {worker.ism} muvaffaqiyatli qo‘shildi! Parol: {worker.password}")
@@ -88,8 +89,17 @@ def worker_list(request):
 def home(request):
     workers = Worker.objects.filter(manager=request.user)
     manager = request.user
+    wk = [i.ism + ' ' + i.familiya + str(i.worker_id) for i in workers]
+    msss = ChatMessage.objects.filter(sender__in=wk, is_read=False)
+    st = set()
+    for i in msss:
+        st.add(i.sender)
 
     worker_stats = []
+    wun = -1
+    for _ in st:
+        wun += 1
+    print(wun)
     for worker in workers:
         kunliklar = DailyWork.objects.filter(worker=worker)
         jami_mahsulot = sum([float(d.umumiy_mahsulot) for d in kunliklar])
@@ -97,8 +107,6 @@ def home(request):
         jami_haqi = sum([d.hisoblangan_haqi for d in kunliklar])
         sof = float(jami_mahsulot) - float(jami_sifatsiz)
         vaznlar = len([float(d.umumiy_mahsulot) for d in kunliklar])
-        print(vaznlar)
-
         worker_stats.append({
             'worker': worker,
             'mahsulot': jami_mahsulot,
@@ -108,7 +116,12 @@ def home(request):
             'vaznlar': vaznlar
         })
 
-    return render(request, 'm_home.html', {'worker_stats': worker_stats, 'manager': manager})
+    ctx = {
+        'wun': wun,
+        'worker_stats': worker_stats,
+        'manager': manager
+    }
+    return render(request, 'm_home.html', ctx)
 
 
 @login_required
@@ -138,7 +151,12 @@ def add_daily_work(request):
 
         total_weight = sum(weight_list)
         worker = Worker.objects.get(id=worker_id)
-
+        sf = total_weight - bad_weight
+        pul = sf * price_per_kg
+        worker.ishlangan += pul
+        qoldiq = worker.ishlangan - worker.tolangan
+        worker.qoldiq = qoldiq
+        worker.save()
         dail = DailyWork.objects.create(
             worker=worker,
             umumiy_mahsulot=total_weight,
@@ -150,15 +168,19 @@ def add_daily_work(request):
         dail.save()
 
         return redirect('manager:home')
+    ctx = {
+        'workers': workers,
+    }
+    return render(request, 'add_daily_work.html', ctx)
 
-    return render(request, 'add_daily_work.html', {'workers': workers})
 
-
-@login_required(login_url='manager:manager-login')
+@login_required()
 def worker_detail(request, worker_id):
     worker = get_object_or_404(Worker, id=worker_id, manager=request.user)
     ishlar = DailyWork.objects.filter(worker=worker).order_by('-sana')
+    tolovlar = MonthlyPayment.objects.filter(worker=worker).order_by('-created')
     context = {
+        'tolovlar': tolovlar,
         'worker': worker,
         'ishlar': ishlar,
     }
@@ -167,27 +189,27 @@ def worker_detail(request, worker_id):
 
 @login_required
 def edit_profile(request):
-    user = request.user
-    profile = getattr(user, 'profile', None)
+    profile, created = ManagerProfile.objects.get_or_create(user=request.user)
 
     if request.method == 'POST':
-        form = ProfileUpdateForm(request.POST, request.FILES, instance=user)
-        if form.is_valid():
-            user = form.save()
-            image = form.cleaned_data.get('image')
-            if image:
-                if profile:
-                    profile.image = image
-                    profile.save()
-                else:
-                    ManagerProfile.objects.create(user=user, image=image)
+        profile_form = ChangeManagerProfileForm(request.POST, request.FILES, instance=profile, user=request.user)
+        password_form = CustomSetPasswordForm(user=request.user, data=request.POST)
 
-            messages.success(request, "Profil muvaffaqiyatli yangilandi!")
-            return redirect('manager:profil')
+        if profile_form.is_valid() and password_form.is_valid():
+            profile_form.save()
+            password_form.save()
+            messages.success(request, "Profilingiz muvaffaqiyatli yangilandi!")
+            return redirect('manager:edit_profile')
+        else:
+            messages.error(request, "Iltimos, xatolarni tuzating.")
     else:
-        form = ProfileUpdateForm(instance=user)
+        profile_form = ChangeManagerProfileForm(instance=profile, user=request.user)
+        password_form = CustomSetPasswordForm(user=request.user)
 
-    return render(request, 'edit_profil.html', {'form': form})
+    return render(request, 'edit_profil.html', {
+        'profile_form': profile_form,
+        'password_form': password_form,
+    })
 
 
 @login_required
@@ -224,7 +246,15 @@ def manager_chat_l(request):
 
     us = {}
     for i in chat_users:
-        us[i[:-5]] = int(i[-5:])
+        un = 0
+        mss = messages.filter(sender=i, receiver=manager)
+        for e in mss:
+            if not e.is_read:
+                un += 1
+        wr = Worker.objects.filter(worker_id=int(i[-5:])).first()
+        wr.unread = un
+        wr.save()
+        us[i[:-5]] = {int(i[-5:]): un}
     context = {
         'us': us,
         'chat_users': chat_users,
@@ -241,7 +271,8 @@ def daily_reports(request):
     start_date = parse_date(start_date_str) if start_date_str else None
     end_date = parse_date(end_date_str) if end_date_str else None
 
-    queryset = DailyWork.objects.all()
+    ws = Worker.objects.filter(manager=request.user)
+    queryset = DailyWork.objects.filter(worker__in=ws)
     if start_date:
         queryset = queryset.filter(sana__gte=start_date)
     if end_date:
@@ -250,7 +281,7 @@ def daily_reports(request):
     reports = list(queryset.values('sana').annotate(
         jami_ishlangan=Sum('umumiy_mahsulot'),
         jami_sifatsiz=Sum('sifatsiz_mahsulot')
-    ).order_by('sana'))
+    ).order_by('-sana'))
 
     # sofi qiymatini qo'shish
     for r in reports:
@@ -281,6 +312,11 @@ def manager_chat_detail(request, id):
         (Q(sender=manager) & Q(receiver=worker.ism + ' ' + worker.familiya + str(worker.worker_id))) |
         (Q(sender=worker.ism + ' ' + worker.familiya + str(worker.worker_id)) & Q(receiver=manager))
     ).order_by('created_at')  # eski xabarlardan yangi xabarlarga
+
+    for i in messages:
+        if i.sender != request.user.username:
+            i.is_read = True
+            i.save()
 
     if request.method == "POST":
         text = request.POST.get('message')
@@ -356,3 +392,69 @@ def mark_as_read(request, message_id):
         return JsonResponse({"error": "Xabar topilmadi"}, status=404)
     except Exception as e:
         return JsonResponse({"error": str(e)}, status=500)
+
+
+@login_required
+def add_payment(request):
+    workers = Worker.objects.filter(manager=request.user)
+    workers_exist = workers.exists()
+
+    if request.method == 'POST':
+        form = MonthlyPaymentForm(request.POST)
+        form.fields['worker'].queryset = workers  # <-- BU HAR DOIM KERAK
+        if form.is_valid():
+            instance = form.save(commit=False)
+            if instance.worker.manager != request.user:
+                messages.error(request, "Siz bu ishchiga to‘lov kiritolmaysiz.")
+                return redirect('manager:tolov')
+            if instance.summa <= 0:
+                messages.error(request, "Bunday summa to'lab bo'lmaydi")
+                return redirect('manager:tolov')
+            if instance.summa > instance.worker.qoldiq:
+                messages.error(request, "Ishchi buncha summa ishlamagan")
+                return redirect('manager:tolov')
+            instance.manager = request.user
+            instance.save()
+            messages.success(request, "To‘lov muvaffaqiyatli qo‘shildi.")
+            return redirect('manager:tolov')
+    else:
+        form = MonthlyPaymentForm()
+        form.fields['worker'].queryset = workers  # <-- BU YERDA HAM KERAK
+
+    return render(request, 'monthly_payment.html', {
+        'form': form,
+        'workers_exist': workers_exist,
+        'back_url': 'manager:home',
+    })
+
+
+@login_required
+def tolow(request, w_id):
+    worker = get_object_or_404(Worker, worker_id=w_id)  # .first() o‘rniga xavfsizroq
+    qoldiq = worker.qoldiq
+
+    if request.method == 'POST':
+        print("POST so‘rov")
+        form = TolowForm(data=request.POST, worker_id=w_id)
+        if form.is_valid():
+            print("Forma valid")
+            instance = form.save(commit=False)
+            if worker.manager != request.user:
+                messages.error(request, "Siz bu ishchiga to‘lov kiritolmaysiz.")
+                return redirect('manager:tolow', w_id=worker.worker_id)
+            instance.manager = request.user
+            instance.save()
+            messages.success(request, "To‘lov muvaffaqiyatli qo‘shildi.")
+            return redirect('manager:worker_detail', worker_id=worker.id)
+        else:
+            print("Forma xatolari:", form.errors)
+    else:
+        form = TolowForm(worker_id=w_id)
+        print("GET so‘rov")
+
+    return render(request, 'tolow.html', {
+        'form': form,
+        'qoldiq': qoldiq,
+        'back_url': 'manager:home',
+        'worker': worker,  # Shablon uchun qo‘shimcha
+    })

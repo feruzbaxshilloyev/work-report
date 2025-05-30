@@ -5,6 +5,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Yozishmalar ro‘yxati</title>
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css" />
     <style>
         body {
             background: linear-gradient(to right, #6b7280, #d1d5db);
@@ -31,11 +32,26 @@
             animation: slideIn 0.8s ease-out;
             margin-bottom: 1.5rem;
         }
+        .btn-primary {
+            border-radius: 0.75rem;
+            padding: 0.7rem 1.5rem;
+            background: #3b82f6;
+            border: none;
+            transition: transform 0.3s ease, box-shadow 0.3s ease;
+            position: relative;
+            overflow: hidden;
+        }
+        .btn-primary:hover {
+            background: #2563eb;
+            transform: translateY(-3px);
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.2);
+        }
         .btn-secondary {
             border-radius: 0.75rem;
             padding: 0.7rem 1.5rem;
             background: #6b7280;
             border: none;
+            color: white;
             transition: transform 0.3s ease, box-shadow 0.3s ease;
             position: relative;
             overflow: hidden;
@@ -45,7 +61,7 @@
             transform: translateY(-3px);
             box-shadow: 0 5px 15px rgba(0, 0, 0, 0.2);
         }
-        .btn-secondary::before {
+        .btn-primary::before, .btn-secondary::before {
             content: '';
             position: absolute;
             top: 50%;
@@ -57,7 +73,7 @@
             transform: translate(-50%, -50%);
             transition: width 0.6s ease, height 0.6s ease;
         }
-        .btn-secondary:hover::before {
+        .btn-primary:hover::before, .btn-secondary:hover::before {
             width: 200px;
             height: 200px;
         }
@@ -84,7 +100,22 @@
             background: #dbeafe;
             color: #1e40af;
         }
-        /* Animations */
+        .badge-circle {
+            position: absolute;
+            top: -10px;
+            right: -10px;
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            width: 20px;
+            height: 20px;
+            background-color: red;
+            color: white;
+            border-radius: 50%;
+            font-size: 12px;
+            font-weight: bold;
+            text-align: center;
+        }
         @keyframes fadeIn {
             0% { opacity: 0; transform: scale(0.95); }
             100% { opacity: 1; transform: scale(1); }
@@ -98,7 +129,6 @@
             50% { transform: scale(1.05); }
             100% { transform: scale(1); }
         }
-        /* Responsive adjustments */
         @media (max-width: 576px) {
             .card {
                 padding: 1.5rem;
@@ -110,7 +140,7 @@
                 font-size: 0.9rem;
                 padding: 0.8rem;
             }
-            .btn-secondary {
+            .btn-primary, .btn-secondary {
                 font-size: 0.9rem;
                 padding: 0.6rem 1rem;
             }
@@ -119,18 +149,34 @@
 </head>
 <body class="container py-5">
     <div class="card">
-        <h2>💬 Chatlar</h2>
-        <a href="javascript:history.back()" class="btn btn-secondary mb-3">🔙 Orqaga</a>
-
-        <div class="list-group">
-            {% for user in users %}
-            <a href="{% url 'worker:chat' user.id worker.worker_id %}" class="list-group-item chat-user list-group-item-action">
-                👤 {{ user.username }}
-            </a>
-            {% empty %}
-            <div class="alert alert-info">Hozircha hech kim bilan yozishma yo‘q.</div>
-            {% endfor %}
+        <div class="d-flex justify-content-between align-items-center mb-4">
+            <h2>💬 Chatlar</h2>
+            <div class="d-flex gap-2">
+                <a href="{% url 'worker:chat_search' worker.worker_id %}" class="btn btn-primary">
+                    <i class="fas fa-search"></i> Qidirish
+                </a>
+                <a href="{% url 'worker:worker_profile' worker.worker_id %}" class="btn btn-secondary">
+                    <i class="fas fa-arrow-left"></i> Orqaga
+                </a>
+            </div>
         </div>
+
+<div class="list-group">
+    {% for user, a in uss.items %}
+        {% for s, b in a.items %}
+            <a href="{% url 'worker:ww_chat' s worker.worker_id %}" class="list-group-item chat-user list-group-item-action d-flex justify-content-between align-items-center">
+                <span>👤 {{ user }}</span>
+                {% if b != 0 %}
+                    <span class="badge bg-danger rounded-circle" style="width: 20px; height: 20px; display: inline-flex; align-items: center; justify-content: center; font-size: 12px;">
+                        {{ b }}
+                    </span>
+                {% endif %}
+            </a>
+        {% empty %}
+            <div class="alert alert-info">Hozircha hech kim bilan yozishma yo‘q.</div>
+        {% endfor %}
+    {% endfor %}
+</div>
     </div>
 
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>

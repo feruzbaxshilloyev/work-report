@@ -1,0 +1,182 @@
+<!DOCTYPE html>
+<html lang="uz">
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>To'lovlar tarixi</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet" />
+    <style>
+        body {
+            background: linear-gradient(to right, #e0f2fe, #bae6fd);
+            min-height: 100vh;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            padding: 2rem 1rem;
+        }
+        .container {
+            max-width: 900px;
+            background: #fff;
+            border-radius: 1rem;
+            box-shadow: 0 8px 25px rgba(14, 30, 37, 0.12);
+            padding: 2rem;
+        }
+        h1 {
+            font-weight: 700;
+            color: #0c4a6e;
+            margin-bottom: 0.5rem;
+        }
+        .info-text {
+            color: #475569;
+            font-size: 1rem;
+            margin-bottom: 1rem;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            flex-wrap: wrap;
+            gap: 0.5rem;
+        }
+        .btn-manager {
+            background-color: #0284c7;
+            color: white;
+            border: none;
+            padding: 0.5rem 1.2rem;
+            border-radius: 0.6rem;
+            font-weight: 600;
+            text-decoration: none;
+            transition: background-color 0.3s ease;
+            display: inline-flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+        .btn-manager:hover, .btn-back:hover {
+            background-color: #0369a1;
+            text-decoration: none;
+            color: white;
+        }
+        .btn-back {
+            background-color: #94a3b8;
+            color: white;
+            border: none;
+            padding: 0.5rem 1.2rem;
+            border-radius: 0.6rem;
+            font-weight: 600;
+            margin-bottom: 1.5rem;
+            display: inline-flex;
+            align-items: center;
+            gap: 0.5rem;
+            cursor: pointer;
+            text-decoration: none;
+        }
+        .btn-back:focus {
+            outline: 3px solid #2563eb;
+            outline-offset: 2px;
+        }
+        table {
+            width: 100%;
+            border-collapse: separate;
+            border-spacing: 0 12px;
+            font-size: 1rem;
+        }
+        thead tr th {
+            background-color: #0284c7;
+            color: white;
+            padding: 0.8rem 1rem;
+            text-align: left;
+            border-radius: 0.7rem 0.7rem 0 0;
+            font-weight: 700;
+        }
+        tbody tr {
+            background-color: #f1f5f9;
+            border-radius: 0.6rem;
+            transition: background-color 0.3s ease;
+        }
+        tbody tr:hover {
+            background-color: #dbeafe;
+        }
+        tbody tr td {
+            padding: 1rem;
+            vertical-align: middle;
+            border-left: 8px solid transparent;
+        }
+        tbody tr td:first-child {
+            border-left: none;
+            font-weight: 600;
+            color: #1e293b;
+        }
+        tbody tr td:last-child {
+            font-weight: 700;
+            color: #0369a1;
+            text-align: right;
+        }
+        @media (max-width: 600px) {
+            body {
+                padding: 1rem 0.5rem;
+            }
+            .container {
+                padding: 1.5rem 1rem;
+            }
+            table {
+                font-size: 0.9rem;
+            }
+            thead tr th {
+                padding: 0.6rem 0.8rem;
+            }
+            tbody tr td {
+                padding: 0.7rem 0.8rem;
+            }
+            .info-text {
+                flex-direction: column;
+                align-items: flex-start;
+            }
+            .btn-manager, .btn-back {
+                width: 100%;
+                justify-content: center;
+                padding: 0.7rem 0;
+                font-size: 1.1rem;
+            }
+        }
+    </style>
+</head>
+<body>
+
+<div class="container" role="main" aria-label="To'lovlar tarixi sahifasi">
+
+    <a href="javascript:history.back()" class="btn-back" aria-label="Orqaga qaytish">
+        &#8592; Orqaga
+    </a>
+
+    <h1>To'lovlar tarixi</h1>
+
+    <div class="info-text">
+        <span>Ma'lumotlar {{ worker.manager.username.capitalize }} tomonidan kiritilgan</span>
+        <a href="{% url 'worker:chat' worker.manager.id worker.worker_id %}" class="btn-manager" aria-label="Managerga yozish">
+            <i class="fas fa-envelope"></i> Managerga yozish
+        </a>
+    </div>
+
+    <table aria-describedby="tolovlarCaption" role="table">
+        <caption id="tolovlarCaption" class="visually-hidden">Ishchining to'lovlar tarixi: sana va summa</caption>
+        <thead>
+            <tr>
+                <th scope="col">Sana</th>
+                <th scope="col">Summa (so'm)</th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for tolov in tolovlar %}
+            <tr>
+                <td>{{ tolov.sana|date:"d-m-Y" }}</td>
+                <td>{{ tolov.summa|floatformat:0 }}</td>
+            </tr>
+            {% empty %}
+            <tr>
+                <td colspan="2" style="text-align:center; color:#64748b;">Ma'lumot topilmadi</td>
+            </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+
+</div>
+
+<script src="https://kit.fontawesome.com/a076d05399.js" crossorigin="anonymous"></script>
+</body>
+</html>

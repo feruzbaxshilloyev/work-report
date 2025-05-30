@@ -26,7 +26,6 @@ urlpatterns = [
     path('', include('profil.urls')),
     path('worker/', include('worker.urls')),
     path('manager/', include('manager.urls')),
-    # path('accounts/login/', auth_views.LoginView.as_view(template_name='registration/login.html'), name='login'),
 
 ]
 

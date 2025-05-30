@@ -1,32 +1,55 @@
 <!DOCTYPE html>
 <html lang="uz">
 <head>
-    <meta charset="UTF-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
     <title>Chat: {{ other_user.get_full_name }}</title>
-    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet" />
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
     <style>
         body {
-            background: #f0f2f5;
-            font-family: "Segoe UI", Tahoma, Geneva, Verdana, sans-serif;
+            background: linear-gradient(135deg, #2a4365, #4c8bf5);
+            min-height: 100vh;
+            padding: 2rem 0;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            color: #e2e8f0;
+        }
+        .container {
+            max-width: 1200px;
         }
         .chat-container {
             max-width: 600px;
             margin: auto;
-            background: white;
-            border-radius: 10px;
+            background: linear-gradient(145deg, #ffffff, #f1f5f9);
+            border-radius: 15px;
             padding: 10px 15px 15px 15px;
-            box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+            box-shadow: 0 15px 40px rgba(0, 0, 0, 0.3);
+            animation: fadeIn 1s ease-in-out;
             height: 90vh;
             display: flex;
             flex-direction: column;
         }
+        .header-container {
+            background: linear-gradient(90deg, #ffffff, #f1f5f9);
+            border-radius: 10px;
+            padding: 15px;
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+            animation: slideIn 0.8s ease-out;
+            margin-bottom: 1.5rem;
+        }
         .chat-header {
             padding: 10px 0;
-            border-bottom: 1px solid #ddd;
+            border-bottom: 1px solid #d1d5db;
             display: flex;
             justify-content: space-between;
             align-items: center;
+        }
+        h5 {
+            font-weight: 700;
+            color: #1e293b;
+            font-size: 1.5rem;
+            text-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+            animation: slideIn 0.8s ease-out;
         }
         .chat-box {
             flex-grow: 1;
@@ -37,21 +60,20 @@
         .date-separator {
             text-align: center;
             margin: 15px 0;
-            color: #666;
+            color: #1e293b;
             font-size: 0.85rem;
             position: relative;
         }
         .date-separator::before,
         .date-separator::after {
-            content: "";
+            content: '';
             display: inline-block;
             width: 30%;
             height: 1px;
-            background: #ccc;
+            background: #d1d5db;
             vertical-align: middle;
             margin: 0 10px;
         }
-
         .message {
             max-width: 75%;
             padding: 10px 15px;
@@ -62,30 +84,26 @@
             font-size: 0.9rem;
             line-height: 1.3;
             clear: both;
+            color: white;
         }
         .message.sent {
-            background-color: #007bff;
-            color: white;
+            background: linear-gradient(45deg, #3b82f6, #60a5fa);
             margin-left: auto;
             border-bottom-right-radius: 4px;
         }
         .message.received {
-            background-color: green;
-            color: #050505;
+            background: linear-gradient(45deg, #10b981, #34d399);
             margin-right: auto;
-            border-bottom-left-radius: 10px;
+            border-bottom-left-routing: 4px;
         }
-
-        /* Galichka (✓) uchun */
         .checkmarks {
             position: absolute;
             bottom: 5px;
             right: 10px;
             font-size: 0.75rem;
-            color: rgba(255, 0, 0, 0.7);
+            color: rgba(255, 255, 255, 0.7);
         }
         .message.received .checkmarks {
-            color: rgba(255, 0, 0, 0.7);
             right: auto;
             left: 10px;
             bottom: 5px;
@@ -97,22 +115,88 @@
         .checkmark-double::after {
             content: "✓✓";
             margin-left: 2px;
-            letter-spacing: -6px;
+            letter-spacing: -2px;
         }
         .checkmark-double.read {
-            color: #f44336;  /* klassik qizil */
+            color: #ffffff;
         }
-
-        /* Vaqt uchun kichik matn */
         .message-time {
             display: block;
-            font-size: 0.7rem;
-            color: #999;
+            font-size: 0.75rem;
+            color: rgba(255, 255, 255, 0.7);
             margin-top: 5px;
-            text-align: left;
+            text-align: right;
         }
-
-        /* Forma */
+        .msg-actions {
+            display: flex;
+            gap: 5px;
+            margin-top: 5px;
+        }
+        .btn-nav {
+            width: 40px;
+            height: 40px;
+            border-radius: 50%;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            font-size: 1rem;
+            padding: 0;
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.2);
+            transition: transform 0.3s ease, box-shadow 0.3s ease, background 0.3s ease;
+            position: relative;
+            overflow: hidden;
+            border: none;
+            color: white;
+        }
+        .btn-nav:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 8px 20px rgba(0, 0, 0, 0.3);
+        }
+        .btn-nav::before {
+            content: '';
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            width: 0;
+            height: 0;
+            background: rgba(255, 255, 255, 0.3);
+            border-radius: 50%;
+            transform: translate(-50%, -50%);
+            transition: width 0.6s ease, height 0.6s ease;
+            z-index: 0;
+        }
+        .btn-nav:hover::before {
+            width: 100px;
+            height: 100px;
+        }
+        .btn-nav i {
+            position: relative;
+            z-index: 1;
+        }
+        .btn-back {
+            background: linear-gradient(45deg, #6b7280, #9ca3af);
+        }
+        .btn-back:hover {
+            background: linear-gradient(45deg, #4b5563, #6b7280);
+        }
+        .btn-edit {
+            background: linear-gradient(45deg, #f59e0b, #fcd34d);
+        }
+        .btn-edit:hover {
+            background: linear-gradient(45deg, #d97706, #f59e0b);
+        }
+        .btn-delete {
+            background: linear-gradient(45deg, #ef4444, #f87171);
+        }
+        .btn-delete:hover {
+            background: linear-gradient(45deg, #dc2626, #ef4444);
+        }
+        .btn-send {
+            background: linear-gradient(45deg, #3b82f6, #60a5fa);
+        }
+        .btn-send:hover {
+            background: linear-gradient(45deg, #2563eb, #3b82f6);
+        }
         form.input-group {
             display: flex;
             gap: 5px;
@@ -121,14 +205,22 @@
             flex-grow: 1;
             border-radius: 20px;
             padding: 10px 15px;
-            border: 1px solid #ccc;
+            border: 1px solid #d1d5db;
+            background: #f8fafc;
+            transition: border-color 0.3s ease;
         }
-        form button {
-            border-radius: 20px;
-            padding: 10px 15px;
+        form input[type="text"]:focus {
+            border-color: #3b82f6;
+            box-shadow: 0 0 8px rgba(59, 130, 246, 0.3);
         }
-
-        /* Mobile uchun */
+        @keyframes fadeIn {
+            0% { opacity: 0; transform: scale(0.95); }
+            100% { opacity: 1; transform: scale(1); }
+        }
+        @keyframes slideIn {
+            0% { opacity: 0; transform: translateY(-20px); }
+            100% { opacity: 1; transform: translateY(0); }
+        }
         @media (max-width: 576px) {
             .chat-container {
                 height: 100vh;
@@ -139,115 +231,131 @@
                 max-width: 90%;
                 font-size: 1rem;
             }
+            h5 {
+                font-size: 1.25rem;
+            }
+            .btn-nav {
+                width: 36px;
+                height: 36px;
+                font-size: 0.875rem;
+            }
+            .header-container {
+                padding: 10px;
+            }
         }
     </style>
 </head>
 <body>
-
-<div class="chat-container">
-    <div class="chat-header">
-        <h5>Chat: {{ worker }}</h5>
-        <a href="{% url 'manager:m_chat_u' %}" class="btn btn-outline-secondary btn-sm">⬅️ Orqaga</a>
-    </div>
-
-    <div class="chat-box" id="chat-box">
-        {% regroup messages by created_at.date as date_groups %}
-
-        {% for date_group in date_groups %}
-            <div class="date-separator">{{ date_group.grouper|date:"d M Y, l" }}</div>
-
-            {% for msg in date_group.list %}
-                <div class="message {% if msg.sender == request.user.username %}sent{% else %}received{% endif %}" data-msg-id="{{ msg.id }}" data-is-read="{{ msg.is_read|lower }}">
-                    {{ msg.message|linebreaksbr }}
-                    <span class="message-time">{{ msg.created_at|date:"H:i" }}</span>
-
-                    <span class="checkmarks
-                        {% if msg.sender == request.user.username %}
-                            {% if msg.is_read %}
-                                checkmark-double read
-                            {% else %}
-                                checkmark-single
+    <div class="container">
+        <div class="header-container d-flex justify-content-between align-items-center mb-3 flex-wrap gap-2">
+            <h5><i class="fas fa-comment me-2"></i> Chat: {{ worker }}</h5>
+            <div class="d-flex gap-2">
+                <a href="{% url 'manager:m_chat_u' %}" class="btn-nav btn-back" title="Orqaga">
+                    <i class="fas fa-arrow-left"></i>
+                </a>
+            </div>
+        </div>
+        <div class="chat-container">
+            <div class="chat-box" id="chat-box">
+                {% regroup messages by created_at.date as date_groups %}
+                {% for date_group in date_groups %}
+                    <div class="date-separator">{{ date_group.grouper|date:"d M Y, l" }}</div>
+                    {% for msg in date_group.list %}
+                        <div class="message {% if msg.sender == request.user.username %}sent{% else %}received{% endif %}" data-msg-id="{{ msg.id }}" data-is-read="{{ msg.is_read|lower }}">
+                            {{ msg.message|linebreaksbr }}
+                            <span class="message-time">{{ msg.created_at|date:"H:i" }}</span>
+                            <span class="checkmarks
+                                {% if msg.sender == request.user.username %}
+                                    {% if msg.is_read %}
+                                        checkmark-double read
+                                    {% else %}
+                                        checkmark-single
+                                    {% endif %}
+                                {% endif %}
+                            "></span>
+                            {% if msg.sender == request.user.username %}
+                                <div class="msg-actions">
+                                    <a href="{% url 'manager:edit_message' msg.id %}" class="btn-nav btn-edit" title="Tahrirlash">
+                                        <i class="fas fa-edit"></i>
+                                    </a>
+                                    <a href="{% url 'manager:delete_message' msg.id %}" class="btn-nav btn-delete" title="O‘chirish">
+                                        <i class="fas fa-trash"></i>
+                                    </a>
+                                </div>
                             {% endif %}
-                        {% endif %}
-                    "></span>
-
-                    {% if msg.sender == request.user.username %}
-                    <div class="msg-actions">
-                        <a href="{% url 'manager:edit_message' msg.id %}" class="btn-edit">✏️</a>
-                        <a href="{% url 'manager:delete_message' msg.id %}" class="btn-delete">🗑️</a>
-                    </div>
-                    {% endif %}
-                </div>
-            {% endfor %}
-        {% endfor %}
+                        </div>
+                    {% endfor %}
+                {% endfor %}
+            </div>
+            <form method="post" class="input-group" autocomplete="off">
+                {% csrf_token %}
+                <input type="text" name="message" placeholder="Xabar yozing..." required autofocus />
+                <button type="submit" class="btn-nav btn-send" title="Yuborish">
+                    <i class="fas fa-paper-plane"></i>
+                </button>
+            </form>
+        </div>
     </div>
-
-    <form method="post" class="input-group" autocomplete="off">
-        {% csrf_token %}
-        <input type="text" name="message" placeholder="Xabar yozing..." required autofocus />
-        <button type="submit" class="btn btn-primary">Yuborish</button>
-    </form>
-</div>
-
-<script>
-    // Scroll oxirgi xabarga avtomatik tushishi uchun
-    document.addEventListener("DOMContentLoaded", function() {
-        var chatBox = document.getElementById('chat-box');
-        if(chatBox){
-            chatBox.scrollTop = chatBox.scrollHeight;
-        }
-
-        const messages = document.querySelectorAll('.message');
-        messages.forEach(function(msg) {
-            // Xabarni ko'rishni aniqlash
-            if (!msg.classList.contains('sent') && msg.dataset.isRead === 'false') {
-                msg.addEventListener('click', function() {
-                    markAsRead(msg.dataset.msgId);
-                });
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+    <script>
+        document.addEventListener("DOMContentLoaded", function() {
+            var chatBox = document.getElementById('chat-box');
+            if(chatBox){
+                chatBox.scrollTop = chatBox.scrollHeight;
             }
-        });
-
-        // Xabarni ko'rilgan deb belgilash
-        function markAsRead(messageId) {
-            fetch(`/manager/mark_as_read/${messageId}/`, {
-                method: 'POST',
-                headers: {
-                    'Content-Type': 'application/json',
-                    'X-CSRFToken': getCSRFToken(),
-                },
-            })
-            .then(res => {
-                if (res.ok) {
-                    const msgDiv = document.querySelector(`.message[data-msg-id="${messageId}"]`);
-                    if (msgDiv) {
-                        msgDiv.dataset.isRead = 'true';
-                        const checkmarks = msgDiv.querySelector('.checkmarks');
-                        if (checkmarks) {
-                            checkmarks.classList.remove('checkmark-single');
-                            checkmarks.classList.add('checkmark-double', 'read');
+            const messages = document.querySelectorAll('.message');
+            messages.forEach(function(msg) {
+                if (!msg.classList.contains('sent') && msg.dataset.isRead === 'false') {
+                    msg.addEventListener('click', function() {
+                        markAsRead(msg.dataset.msgId);
+                    });
+                }
+            });
+            function markAsRead(messageId) {
+                fetch(`/manager/mark_as_read/${messageId}/`, {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                        'X-CSRFToken': getCSRFToken(),
+                    },
+                })
+                .then(res => {
+                    if (res.ok) {
+                        const msgDiv = document.querySelector(`.message[data-msg-id="${messageId}"]`);
+                        if (msgDiv) {
+                            msgDiv.dataset.isRead = 'true';
+                            const checkmarks = msgDiv.querySelector('.checkmarks');
+                            if (checkmarks) {
+                                checkmarks.classList.remove('checkmark-single');
+                                checkmarks.classList.add('checkmark-double', 'read');
+                            }
                         }
                     }
-                }
-            })
-            .catch(err => {
-                console.error("Xatolik yuz berdi:", err);
-            });
-        }
-
-        // CSRF token olish funksiyasi
-        function getCSRFToken() {
-            const name = 'csrftoken';
-            const cookies = document.cookie.split(';');
-            for(let i=0; i<cookies.length; i++){
-                let c = cookies[i].trim();
-                if(c.startsWith(name + '=')){
-                    return decodeURIComponent(c.substring(name.length + 1));
-                }
+                })
+                .catch(err => {
+                    console.error("Xatolik yuz berdi:", err);
+                });
             }
-            return '';
-        }
-    });
-</script>
-
+            function getCSRFToken() {
+                const name = 'csrftoken';
+                const cookies = document.cookie.split(';');
+                for(let i=0; i<cookies.length; i++){
+                    let c = cookies[i].trim();
+                    if(c.startsWith(name + '=')){
+                        return decodeURIComponent(c.substring(name.length + 1));
+                    }
+                }
+                return '';
+            }
+            document.querySelectorAll('.btn-nav').forEach(btn => {
+                btn.addEventListener('mouseenter', () => {
+                    btn.style.animation = 'pulse 0.6s ease-in-out';
+                });
+                btn.addEventListener('animationend', () => {
+                    btn.style.animation = '';
+                });
+            });
+        });
+    </script>
 </body>
 </html>

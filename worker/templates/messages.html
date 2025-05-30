@@ -55,21 +55,25 @@
             <a href="javascript:history.back()" class="back-btn">⬅️ Orqaga</a>
         </div>
         <div class="card-body p-4">
-            <div class="list-group">
-                {% for msg in messages %}
-                    <a href="{% url 'worker:chat' worker.manager.id worker.worker_id %}"
-                       class="list-group-item list-group-item-action mb-2 {% if not msg.is_view %}unread-message{% endif %}">
-                        <div class="d-flex w-100 justify-content-between">
-                            <h5 class="mb-1">{{ msg.sarlavha }}</h5>
-                            <small class="text-muted">📅 {{ msg.created_at|date:"Y-m-d H:i" }}</small>
-                        </div>
-                        <p class="mb-1">{{ msg.matn|truncatechars:100 }}</p>
-                    </a>
-                {% empty %}
-                <div class="alert alert-info mt-3">Hozircha xabar yo‘q.</div>
-                {% endfor %}
+<ul class="list-group">
+    {% for message, viewed in ms.items %}
+        <li class="list-group-item d-flex justify-content-between align-items-center">
+            <div class="d-flex align-items-center">
+                <div>
+                    <strong>{{ message.sarlavha }}</strong>
+                    <p class="text-muted mb-0">{{ message.matn|truncatechars:50 }}</p>
+                </div>
+                {% if not viewed %}
+                    <span class="badge badge-circle ms-2">!</span> <!-- Ko'rilmagan xabar belgisi -->
+                {% endif %}
             </div>
-        </div>
+            <div>
+                <a href="{% url 'worker:m_d' message.id worker.worker_id %}" class="btn btn-outline-primary btn-sm">Batafsil</a>
+                <a href="{% url 'worker:chat' man.id worker.worker_id %}" class="btn btn-outline-primary btn-sm">Javob berish</a>
+            </div>
+        </li>
+    {% endfor %}
+</ul>      </div>
     </div>
 </div>
 

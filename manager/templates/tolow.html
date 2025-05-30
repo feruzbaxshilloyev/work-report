@@ -1,0 +1,161 @@
+<!DOCTYPE html>
+<html lang="uz">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Oylik To‘lov — {{ worker.ism }} {{ worker.familiya }}</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
+    <style>
+        body {
+            background: linear-gradient(135deg, #4b6cb7, #182848);
+            min-height: 100vh;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-family: 'Segoe UI', Tahoma, Geneva, sans-serif;
+            padding: 2rem 0;
+        }
+        .card {
+            border-radius: 1.8rem;
+            box-shadow: 0 15px 40px rgba(0, 0, 0, 0.3);
+            background: #ffffff;
+            padding: 3rem;
+            max-width: 600px;
+            width: 100%;
+            position: relative;
+            overflow: hidden;
+        }
+        .card::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: radial-gradient(circle at 10% 20%, rgba(75, 108, 183, 0.1), transparent 50%);
+            z-index: 0;
+            pointer-events: none;
+        }
+        .card > * {
+            position: relative;
+            z-index: 1;
+        }
+        h2 {
+            font-weight: 700;
+            color: #1e293b;
+            margin-bottom: 2rem;
+            text-align: center;
+            font-size: 2rem;
+        }
+        .btn-primary {
+            background: linear-gradient(90deg, #3b82f6, #60a5fa);
+            border: none;
+            padding: 0.8rem 1.5rem;
+            border-radius: 0.75rem;
+            transition: all 0.3s ease;
+        }
+        .btn-primary:hover {
+            background: linear-gradient(90deg, #2563eb, #3b82f6);
+            transform: translateY(-3px);
+            box-shadow: 0 8px 20px rgba(59, 130, 246, 0.4);
+        }
+        .btn-secondary {
+            background: linear-gradient(90deg, #6b7280, #9ca3af);
+            border: none;
+            color: #fff;
+            padding: 0.8rem 1.5rem;
+            border-radius: 0.75rem;
+            transition: all 0.3s ease;
+        }
+        .btn-secondary:hover {
+            background: linear-gradient(90deg, #4b5563, #6b7280);
+            transform: translateY(-3px);
+            box-shadow: 0 8px 20px rgba(107, 114, 128, 0.4);
+        }
+        .form-control {
+            border-radius: 0.5rem;
+            padding: 0.75rem;
+            border: 1px solid #d1d5db;
+            transition: border-color 0.3s ease;
+        }
+        .form-control:focus {
+            border-color: #3b82f6;
+            box-shadow: 0 0 0 0.2rem rgba(59, 130, 246, 0.25);
+            outline: none;
+        }
+        .alert {
+            border-radius: 0.75rem;
+        }
+        @media (max-width: 576px) {
+            .card {
+                padding: 2rem;
+                max-width: 90%;
+            }
+            h2 {
+                font-size: 1.5rem;
+            }
+            .btn-primary, .btn-secondary {
+                font-size: 0.9rem;
+                padding: 0.6rem 1rem;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="card">
+        <h2><i class="fas fa-money-check-alt"></i> Oylik To‘lov</h2>
+
+        {% if messages %}
+            <div class="alert alert-info alert-dismissible fade show" role="alert">
+                {% for message in messages %}
+                    <p>{{ message }}</p>
+                {% endfor %}
+                <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+            </div>
+        {% endif %}
+
+        <div class="mb-3">
+            <p><strong>Ishchi:</strong> {{ worker.ism }} {{ worker.familiya }} (ID: {{ worker.worker_id }})</p>
+            <p><strong>Qoldiq:</strong> {{ qoldiq|floatformat:2 }} so‘m</p>
+        </div>
+
+        <form method="post" class="mb-3" novalidate>
+            {% csrf_token %}
+            {{ form.worker }} <!-- Hidden input -->
+            <div class="mb-3">
+                <label for="{{ form.summa.id_for_label }}" class="form-label">To‘lov summasi (so‘m)</label>
+                {{ form.summa }}
+                {% if form.summa.errors %}
+                    <div class="text-danger">{{ form.summa.errors }}</div>
+                {% endif %}
+            </div>
+            <div class="mb-3">
+                <label for="{{ form.sana.id_for_label }}" class="form-label">To‘lov sanasi</label>
+                {{ form.sana }}
+                {% if form.sana.errors %}
+                    <div class="text-danger">{{ form.sana.errors }}</div>
+                {% endif %}
+            </div>
+            <div class="d-flex gap-2 justify-content-end">
+                <a href="{% url back_url %}" class="btn btn-secondary">
+                    <i class="fas fa-arrow-left"></i> Orqaga
+                </a>
+                <button type="submit" class="btn btn-primary">
+                    <i class="fas fa-save"></i> To‘lov qilish
+                </button>
+            </div>
+        </form>
+    </div>
+
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+    <script>
+        document.addEventListener('DOMContentLoaded', () => {
+            const dateInput = document.querySelector('input[type="date"]');
+            if (dateInput && !dateInput.value) {
+                dateInput.value = new Date().toISOString().split('T')[0];
+            }
+        });
+    </script>
+</body>
+</html>

@@ -2,27 +2,94 @@
 <html lang="uz">
 <head>
     <meta charset="UTF-8">
-    <title>Ishchi Home</title>
+    <title>Ishchi Bosh Sahifa</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1">
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <style>
+        body {
+            background: #f2f4f8;
+            font-family: "Segoe UI", Tahoma, Geneva, Verdana, sans-serif;
+        }
+        .container {
+            max-width: 600px;
+            margin: auto;
+            padding: 20px 15px;
+        }
+        h2 {
+            color: #343a40;
+            font-weight: bold;
+        }
+        .card {
+            border-radius: 12px;
+            box-shadow: 0 4px 10px rgba(0,0,0,0.05);
+        }
+        .card-header {
+            background-color: #007bff;
+            color: white;
+            font-weight: 600;
+            font-size: 1.1rem;
+            border-top-left-radius: 12px;
+            border-top-right-radius: 12px;
+        }
+        .card-body h5 {
+            font-size: 1.2rem;
+            font-weight: 600;
+            color: #0056b3;
+        }
+        .card-text {
+            font-size: 0.95rem;
+            color: #555;
+        }
+        .d-grid .btn {
+            font-weight: 500;
+            padding: 12px;
+            font-size: 0.95rem;
+        }
+        .btn-primary {
+            background-color: #007bff;
+            border: none;
+        }
+        .btn-success {
+            background-color: #28a745;
+            border: none;
+        }
+        .btn-danger {
+            background-color: #dc3545;
+            border: none;
+        }
+        @media (max-width: 576px) {
+            .d-grid .btn {
+                width: 100%;
+                margin-bottom: 10px;
+            }
+            h2 {
+                font-size: 1.5rem;
+            }
+        }
+    </style>
 </head>
-<body class="container mt-5">
-    <h2 class="mb-4">Xush kelibsiz, {{ user.username }}!</h2>
+<body>
+
+<div class="container">
+    <h2 class="mb-4 text-center">Xush kelibsiz, {{ user.username }}!</h2>
 
     <div class="card">
         <div class="card-header">
-            Profilingiz
+            Profil ma'lumotlari
         </div>
         <div class="card-body">
-            <h5 class="card-title">Ishchi: {{ worker.ism.capitalize }} {{ worker.familiya.capitalize }}</h5>
-            <p class="card-text">ID: {{ worker.worker_id }}</p>
-            <p class="card-text">Parol: {{ worker.password }}</p>
-            <a href="{% url 'worker:worker_profile' worker.worker_id %}" class="btn btn-primary">Bosh sahifaga o'tish</a>
-            <a href="{% url 'worker:update_pass' worker.worker_id %}" class="btn btn-primary">Parolni o'zgartirish</a>
+            <h5 class="card-title">👤 {{ worker.ism.capitalize }} {{ worker.familiya.capitalize }}</h5>
+            <p class="card-text">🆔 ID: <strong>{{ worker.worker_id }}</strong></p>
+            <p class="card-text">🔑 Parol: <strong>{{ worker.password }}</strong></p>
+
+            <div class="d-grid gap-2 mt-4">
+                <a href="{% url 'worker:worker_profile' worker.worker_id %}" class="btn btn-primary">🏠 Bosh sahifaga o'tish</a>
+                <a href="{% url 'worker:update_pass' worker.worker_id %}" class="btn btn-success">✏️ Parolni o'zgartirish</a>
+                <a href="{% url 'worker:worker_logout' worker.worker_id %}" class="btn btn-danger">🚪 Chiqish</a>
+            </div>
         </div>
     </div>
+</div>
 
-    <div class="mt-4">
-        <a href="{% url 'worker:worker_logout' worker.worker_id %}" class="btn btn-danger">Chiqish</a>
-    </div>
 </body>
 </html>

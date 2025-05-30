@@ -1,123 +1,155 @@
 <!DOCTYPE html>
 <html lang="uz">
 <head>
-    <meta charset="UTF-8" />
+    <meta charset="UTF-8">
     <title>Ish beruvchi profili</title>
-    <meta name="viewport" content="width=device-width, initial-scale=1" />
-    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet" />
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
     <style>
         body {
-            background: linear-gradient(135deg, #e0e7ff, #f5f7fa); /* Gradient fon */
+            background: linear-gradient(135deg, #2a4365, #4c8bf5);
             min-height: 100vh;
             display: flex;
             align-items: center;
             justify-content: center;
             padding: 20px;
             font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            color: #e2e8f0;
         }
-        .profile-card {
+        .profile-container {
             background: white;
             border-radius: 20px;
             padding: 40px 30px;
-            box-shadow: 0 10px 25px rgba(0, 0, 0, 0.1);
-            max-width: 450px;
+            box-shadow: 0 15px 40px rgba(0, 0, 0, 0.3);
+            max-width: 600px;
             width: 100%;
             transition: transform 0.3s ease, box-shadow 0.3s ease;
             text-align: center;
+            position: relative;
+            overflow: hidden;
         }
-        .profile-card:hover {
+        .profile-container::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: radial-gradient(circle at 10% 20%, rgba(59, 130, 246, 0.1), transparent 50%);
+            z-index: 0;
+        }
+        .profile-container > * {
+            position: relative;
+            z-index: 1;
+        }
+        .profile-container:hover {
             transform: translateY(-5px);
-            box-shadow: 0 15px 30px rgba(0, 0, 0, 0.15);
+            box-shadow: 0 20px 50px rgba(0, 0, 0, 0.4);
         }
         .avatar {
             width: 120px;
             height: 120px;
             object-fit: cover;
             border-radius: 50%;
-            border: 4px solid #0d6efd;
+            border: 4px solid #3b82f6;
             margin-bottom: 25px;
-            transition: border-color 0.3s ease;
+            transition: border-color 0.3s ease, transform 0.3s ease;
         }
         .avatar:hover {
-            border-color: #0056b3;
+            border-color: #2563eb;
+            transform: scale(1.05);
         }
         h2 {
-            color: #2c3e50;
+            color: #1e293b;
             font-weight: 600;
+            font-size: 1.8rem;
+            margin-bottom: 1rem;
+            text-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
         }
         p {
-            color: #34495e;
+            color: #475569;
             font-size: 1rem;
             margin-bottom: 10px;
         }
-        .btn-lg {
-            font-size: 1.1rem;
-            padding: 12px 24px;
-            border-radius: 10px;
-            transition: all 0.3s ease;
-            white-space: nowrap;
+        .btn-nav {
+            width: 48px;
+            height: 48px;
+            border-radius: 50%;
             display: flex;
-            align-items: center;
             justify-content: center;
-            gap: 8px;
-        }
-        .btn-lg:hover {
-            box-shadow: 0 6px 12px rgba(0, 0, 0, 0.2);
-            transform: translateY(-2px);
-        }
-        .btn-outline-primary {
-            background: linear-gradient(90deg, #007bff, #00aaff);
-            color: white;
+            align-items: center;
+            font-size: 1.2rem;
+            padding: 0;
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.2);
+            transition: transform 0.3s ease, box-shadow 0.3s ease, background 0.3s ease;
+            position: relative;
+            overflow: hidden;
             border: none;
-        }
-        .btn-outline-primary:hover {
-            background: linear-gradient(90deg, #0056b3, #0088cc);
             color: white;
         }
-        .btn-outline-success {
-            background: linear-gradient(90deg, #28a745, #34c759);
-            color: white;
-            border: none;
+        .btn-nav:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 8px 20px rgba(0, 0, 0, 0.3);
         }
-        .btn-outline-success:hover {
-            background: linear-gradient(90deg, #218838, #2ba84a);
-            color: white;
+        .btn-home {
+            background: linear-gradient(90deg, #3b82f6, #60a5fa);
         }
-        .btn-outline-warning {
-            background: linear-gradient(90deg, #ffc107, #ffd700);
-            color: #2c3e50;
-            border: none;
+        .btn-home:hover {
+            background: linear-gradient(90deg, #2563eb, #3b82f6);
         }
-        .btn-outline-warning:hover {
-            background: linear-gradient(90deg, #e0a800, #ffca28);
-            color: #2c3e50;
+        .btn-add-worker {
+            background: linear-gradient(90deg, #10b981, #34d399);
         }
-        .btn-outline-danger {
-            background: linear-gradient(90deg, #dc3545, #ff4d4d);
-            color: white;
-            border: none;
+        .btn-add-worker:hover {
+            background: linear-gradient(90deg, #047857, #10b981);
         }
-        .btn-outline-danger:hover {
-            background: linear-gradient(90deg, #c82333, #e63946);
-            color: white;
+        .btn-worker-list {
+            background: linear-gradient(90deg, #f59e0b, #fcd34d);
         }
-        .btn-outline-secondary {
-            background: linear-gradient(90deg, #6c757d, #adb5bd);
-            color: white;
-            border: none;
+        .btn-worker-list:hover {
+            background: linear-gradient(90deg, #d97706, #f59e0b);
         }
-        .btn-outline-secondary:hover {
-            background: linear-gradient(90deg, #5a6268, #8f959c);
-            color: white;
+        .btn-edit {
+            background: linear-gradient(90deg, #8b5cf6, #a78bfa);
         }
-        /* Tugmalar orasidagi bo‘shliq uchun */
-        .btn-grid {
-            display: grid;
-            grid-template-columns: repeat(2, 1fr);
-            gap: 1rem;
+        .btn-edit:hover {
+            background: linear-gradient(90deg, #7c3aed, #8b5cf6);
+        }
+        .btn-logout {
+            background: linear-gradient(90deg, #ef4444, #f87171);
+        }
+        .btn-logout:hover {
+            background: linear-gradient(90deg, #dc2626, #ef4444);
+        }
+        .btn-nav::before {
+            content: '';
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            width: 0;
+            height: 0;
+            background: rgba(255, 255, 255, 0.3);
+            border-radius: 50%;
+            transform: translate(-50%, -50%);
+            transition: width 0.6s ease, height 0.6s ease;
+            z-index: 0;
+        }
+        .btn-nav:hover::before {
+            width: 100px;
+            height: 100px;
+        }
+        .btn-container {
+            display: flex;
+            flex-direction: row; /* Gorizontal tartib */
+            justify-content: center;
+            align-items: center;
+            gap: 12px;
+            margin-top: 20px;
+            flex-wrap: wrap; /* Kichik ekranlarda moslashish */
         }
         @media (max-width: 576px) {
-            .profile-card {
+            .profile-container {
                 padding: 30px 20px;
             }
             .avatar {
@@ -130,38 +162,61 @@
             p {
                 font-size: 0.9rem;
             }
-            .btn-lg {
+            .btn-nav {
+                width: 40px;
+                height: 40px;
                 font-size: 1rem;
-                padding: 10px 20px;
             }
-            .btn-grid {
-                grid-template-columns: 1fr;
+            .btn-container {
+                gap: 8px;
             }
         }
     </style>
 </head>
 <body>
-    <div class="profile-card">
-        <a href="{% url 'manager:home' %}" class="btn btn-outline-secondary btn-lg mb-4 d-inline-flex align-items-center gap-2 justify-content-center">
-            🏠 Bosh sahifa
+<div class="profile-container">
+    {% if not manager.image %}
+    <img src="https://www.w3schools.com/howto/img_avatar.png" alt="Profil rasmi" class="avatar">
+    {% else %}
+    <img src="{{ manager.image.url }}" alt="Profil rasmi" class="avatar">
+    {% endif %}
+    <h2 class="mb-3">Ish beruvchi profili</h2>
+    <p><strong>Korxona nomi:</strong> {{ manager.user.username }}</p>
+    <p><strong>Email:</strong> {{ manager.user.email }}</p>
+    {% if manager.phone %}
+
+    <p><strong>Telefon:</strong> {{ manager.phone }}</p>
+    {% endif %}
+    <div class="btn-container">
+        <a href="{% url 'manager:home' %}" class="btn-nav btn-home" title="Bosh sahifa">
+            <i class="fas fa-home"></i>
         </a>
-        {% if not request.user.image %}
-            <img src="https://www.w3schools.com/howto/img_avatar.png" alt="Profil rasmi" class="avatar" />
-        {% else %}
-            <img src="{{ request.user.image.url }}" alt="Profil rasmi" class="avatar">
-        {% endif %}
-        <h2 class="mb-3">Ish beruvchi profili</h2>
-        <p><strong>Korxona nomi:</strong> {{ request.user.username }}</p>
-        <p><strong>Email:</strong> {{ request.user.email }}</p>
-
-        <div class="mt-4 btn-grid">
-            <a href="{% url 'manager:add_worker' request.user.id %}" class="btn btn-outline-success btn-lg">Ishchi qo‘shish</a>
-            <a href="{% url 'manager:worker_list' %}" class="btn btn-outline-primary btn-lg">Ishchilar ro‘yxati</a>
-            <a href="{% url 'manager:edit_profile' %}" class="btn btn-outline-warning btn-lg">✏️ Tahrirlash</a>
-            <a href="{% url 'manager:logout' %}" class="btn btn-outline-danger btn-lg">🚪 Chiqish</a>
-        </div>
+        <a href="{% url 'manager:add_worker' %}" class="btn-nav btn-add-worker" title="Ishchi qo‘shish">
+            <i class="fas fa-user-plus"></i>
+        </a>
+        <a href="{% url 'manager:worker_list' %}" class="btn-nav btn-worker-list" title="Ishchilar ro‘yxati">
+            <i class="fas fa-users"></i>
+        </a>
+        <a href="{% url 'manager:edit_profile' %}" class="btn-nav btn-edit" title="Tahrirlash">
+            <i class="fas fa-edit"></i>
+        </a>
+        <a href="{% url 'manager:logout' %}" class="btn-nav btn-logout" title="Chiqish">
+            <i class="fas fa-sign-out-alt"></i>
+        </a>
     </div>
+</div>
 
-    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+<script>
+    // Tugmalarga puls animatsiyasi
+    document.querySelectorAll('.btn-nav').forEach(btn => {
+        btn.addEventListener('mouseenter', () => {
+            btn.style.animation = 'pulse 0.6s ease-in-out';
+        });
+        btn.addEventListener('animationend', () => {
+            btn.style.animation = '';
+        });
+    });
+</script>
 </body>
 </html>

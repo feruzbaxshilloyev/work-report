@@ -2,125 +2,255 @@
 <html lang="uz">
 <head>
     <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
     <title>Ish nazorati</title>
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
     <style>
         body {
-            background: linear-gradient(135deg, #e0e7ff, #f5f7fa); /* Gradient fon */
-            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: linear-gradient(135deg, #2a4365, #4c8bf5);
             min-height: 100vh;
-            padding: 20px 0;
+            padding: 2rem 0;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            color: #e2e8f0;
         }
-        .header {
+        .container {
+            max-width: 1200px;
+        }
+        .header-container {
+            background: linear-gradient(90deg, #ffffff, #f1f5f9);
+            border-radius: 10px;
+            padding: 15px;
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+            animation: slideIn 0.8s ease-out;
+            margin-bottom: 1.5rem;
             display: flex;
             justify-content: space-between;
             align-items: center;
-            margin-bottom: 20px;
             flex-wrap: wrap;
             gap: 10px;
         }
-        .header h2 {
-            color: #2c3e50;
-            font-weight: 600;
+        h2 {
+            font-weight: 700;
+            color: #1e293b;
+            font-size: 2rem;
+            text-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+            animation: slideIn 0.8s ease-out;
             margin: 0;
         }
-        .btn-group a {
-            margin-left: 5px;
-            border-radius: 25px;
-            padding: 8px 15px;
-            font-size: 0.9rem;
-            transition: background 0.3s ease, transform 0.2s ease;
+        .table-wrapper {
+            background: linear-gradient(145deg, #ffffff, #f1f5f9);
+            border-radius: 15px;
+            padding: 20px;
+            box-shadow: 0 15px 40px rgba(0, 0, 0, 0.3);
+            animation: fadeIn 1s ease-in-out;
+            overflow-x: auto;
         }
-        .btn-group a:hover {
-            transform: translateY(-2px);
-            box-shadow: 0 2px 6px rgba(0, 0, 0, 0.1);
-        }
-        .btn-info {
-            background: #17a2b8;
-            color: white;
-        }
-        .btn-info:hover {
-            background: #138496;
-        }
-        .btn-success {
-            background: #28a745;
-            color: white;
-        }
-        .btn-success:hover {
-            background: #218838;
-        }
-        .btn-outline-primary {
-            color: #007bff;
-            border-color: #007bff;
-        }
-        .btn-outline-primary:hover {
-            background: #007bff;
-            color: white;
-        }
-        table {
-            background: white;
-            border-radius: 10px;
+        .table {
+            border-radius: 0.75rem;
             overflow: hidden;
+            background: #ffffff;
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
         }
-        th, td {
+        .table th, .table td {
             vertical-align: middle;
+            padding: 1rem;
+            font-size: 0.95rem;
+            color: #1e293b;
+            font-weight: 500;
+        }
+        .table thead {
+            background: linear-gradient(90deg, #1e3a8a, #3b82f6);
+            color: #ffffff;
+        }
+        .table-striped tbody tr:nth-of-type(odd) {
+            background: #f8fafc;
         }
         .table-hover tbody tr:hover {
-            background-color: #f8f9fa;
-            transition: background-color 0.2s ease;
+            background: #dbeafe;
+            transition: background 0.3s ease;
+        }
+        .btn-nav {
+            width: 40px;
+            height: 40px;
+            border-radius: 50%;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            font-size: 1rem;
+            padding: 0;
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.2);
+            transition: transform 0.3s ease, box-shadow 0.3s ease, background 0.3s ease;
+            position: relative;
+            overflow: hidden;
+            border: none;
+            color: white;
+        }
+        .btn-nav:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 8px 20px rgba(0, 0, 0, 0.3);
+        }
+        .btn-nav::before {
+            content: '';
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            width: 0;
+            height: 0;
+            background: rgba(255, 255, 255, 0.3);
+            border-radius: 50%;
+            transform: translate(-50%, -50%);
+            transition: width 0.6s ease, height 0.6s ease;
+            z-index: 0;
+        }
+        .btn-nav:hover::before {
+            width: 100px;
+            height: 100px;
+        }
+        .btn-nav i {
+            position: relative;
+            z-index: 1;
+        }
+        .btn-profile {
+            background: linear-gradient(45deg, #3b82f6, #60a5fa);
+        }
+        .btn-profile:hover {
+            background: linear-gradient(45deg, #2563eb, #3b82f6);
+        }
+        .btn-report {
+            background: linear-gradient(45deg, #f59e0b, #fcd34d);
+        }
+        .btn-report:hover {
+            background: linear-gradient(45deg, #d97706, #f59e0b);
+        }
+        .btn-message {
+            background: linear-gradient(45deg, #ef4444, #f87171);
+        }
+        .btn-message:hover {
+            background: linear-gradient(45deg, #dc2626, #ef4444);
+        }
+        .btn-add-worker {
+            background: linear-gradient(45deg, #10b981, #34d399);
+        }
+        .btn-add-worker:hover {
+            background: linear-gradient(45deg, #047857, #10b981);
+        }
+        .btn-chat {
+            background: linear-gradient(45deg, #6b7280, #9ca3af);
+        }
+        .btn-chat:hover {
+            background: linear-gradient(45deg, #4b5563, #6b7280);
+        }
+        .btn-view {
+            background: linear-gradient(45deg, #17a2b8, #2bc4db);
+        }
+        .btn-view:hover {
+            background: linear-gradient(45deg, #138496, #17a2b8);
+        }
+        .btn-work {
+            background: linear-gradient(45deg, #28a745, #34d399);
+        }
+        .btn-work:hover {
+            background: linear-gradient(45deg, #218838, #28a745);
+        }
+        .action-btns {
+            display: flex;
+            justify-content: center;
+            gap: 8px;
+            flex-wrap: wrap;
         }
         .small {
             font-size: 0.75rem;
+            color: #1e293b;
         }
         .no-data {
             background: rgba(255, 255, 255, 0.8);
             border-radius: 10px;
             padding: 20px;
+            text-align: center;
+            color: #1e293b;
         }
-
-        /* Mobil moslashuvchanlik */
+        .badge-circle {
+            position: absolute;
+            top: -10px;
+            right: -10px;
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            width: 20px;
+            height: 20px;
+            background: linear-gradient(45deg, #ef4444, #f87171);
+            color: white;
+            border-radius: 50%;
+            font-size: 12px;
+            font-weight: bold;
+        }
+        @keyframes fadeIn {
+            0% { opacity: 0; transform: scale(0.95); }
+            100% { opacity: 1; transform: scale(1); }
+        }
+        @keyframes slideIn {
+            0% { opacity: 0; transform: translateY(-20px); }
+            100% { opacity: 1; transform: translateY(0); }
+        }
         @media (max-width: 768px) {
-            .header {
+            .header-container {
                 flex-direction: column;
                 align-items: flex-start;
-            }
-            .header h2 {
-                font-size: 1.5rem;
-                margin-bottom: 10px;
-            }
-            .btn-group a {
-                width: 100%;
-                margin: 5px 0;
-                font-size: 1rem;
                 padding: 10px;
             }
-            table {
-                font-size: 0.9rem;
+            h2 {
+                font-size: 1.5rem;
             }
-            td, th {
-                padding: 8px;
+            .btn-nav {
+                width: 36px;
+                height: 36px;
+                font-size: 0.875rem;
             }
-            .table-responsive {
-                overflow-x: auto;
+            .action-btns {
+                flex-direction: column;
+                gap: 5px;
+            }
+            .action-btns .btn-nav {
+                width: 100%;
+            }
+            .table-wrapper {
+                padding: 15px;
+            }
+            .table th, .table td {
+                padding: 0.8rem;
+                font-size: 0.85rem;
             }
         }
     </style>
 </head>
 <body class="container mt-5">
-    <div class="header">
-        <h2 class="text-primary">Sizga biriktirilgan ishchilar nazorati</h2>
-        <div class="btn-group">
-            <a href="{% url 'manager:profil' %}" class="btn btn-outline-primary">Profil</a>
-            <a href="{% url 'manager:daily_reports' %}" class="btn btn-outline-primary">Kunlik hisobot</a>
-            <a href="{% url 'manager:create_message' %}" class="btn btn-outline-primary">Xabar yuborish</a>
-            <a href="{% url 'manager:add_worker' manager.id %}" class="btn btn-sm btn-info">Ishchi qo‘shish</a>
-            <a href="{% url 'manager:m_chat_u' %}" class="btn btn-outline-primary">Chat</a>
+    <div class="header-container">
+        <h2><i class="fas fa-users me-2"></i> Sizga biriktirilgan ishchilar nazorati</h2>
+        <div class="d-flex gap-2 flex-wrap">
+            <a href="{% url 'manager:profil' %}" class="btn-nav btn-profile" title="Profil">
+                <i class="fas fa-user"></i>
+            </a>
+            <a href="{% url 'manager:daily_reports' %}" class="btn-nav btn-report" title="Kunlik hisobot">
+                <i class="fas fa-chart-bar"></i>
+            </a>
+            <a href="{% url 'manager:create_message' %}" class="btn-nav btn-message" title="Xabar yuborish">
+                <i class="fas fa-envelope"></i>
+            </a>
+            <a href="{% url 'manager:add_worker' %}" class="btn-nav btn-add-worker" title="Ishchi qo‘shish">
+                <i class="fas fa-user-plus"></i>
+            </a>
+            <a href="{% url 'manager:m_chat_u' %}" class="btn-nav btn-chat position-relative" title="Chat">
+                <i class="fas fa-comment"></i>
+                {% if wun > 0 %}
+                    <span class="badge-circle">{{ wun }}</span>
+                {% endif %}
+            </a>
         </div>
     </div>
-
-    <div class="table-responsive">
-        <table class="table table-bordered table-hover table-striped shadow">
-            <thead class="table-primary text-center">
+    <div class="table-wrapper">
+        <table class="table table-bordered table-hover table-striped">
+            <thead class="text-center">
                 <tr>
                     <th>#</th>
                     <th>ID</th>
@@ -128,7 +258,7 @@
                     <th>Familiyasi</th>
                     <th>Jami mahsulot (kg)</th>
                     <th>Sifatsiz mahsulot (kg)</th>
-                    <th>Umumiy xizmat haqi (so'm)</th>
+                    <th>Umumiy xizmat haqi (so‘m)</th>
                     <th>Amal</th>
                 </tr>
             </thead>
@@ -137,29 +267,41 @@
                 <tr>
                     <td>{{ forloop.counter }}</td>
                     <td>{{ stat.worker.worker_id }}</td>
-                    <td>{{ stat.worker.ism.capitalize }}</td>
-                    <td>{{ stat.worker.familiya.capitalize }}</td>
-                    <td>{{ stat.mahsulot }}
-                        <br>
-                        <small class="text-muted">
-                            {{ stat.vaznlar }} kun
-                        </small>
-                    </td>
+                    <td>{{ stat.worker.ism|capfirst }}</td>
+                    <td>{{ stat.worker.familiya|capfirst }}</td>
+                    <td>{{ stat.mahsulot }}<br><small>{{ stat.vaznlar }} kun</small></td>
                     <td>{{ stat.sifatsiz }}</td>
                     <td>{{ stat.kunlik_haqi }}</td>
-                    <td>
-                        <a href="{% url 'manager:worker_detail' stat.worker.id %}" class="btn btn-sm btn-info">Ko‘rish</a>
-                        <a href="{% url 'manager:m_chat' stat.worker.worker_id %}" class="btn btn-sm btn-info">Xabar yozish</a>
-                        <a href="{% url 'manager:add_daily_work' %}" class="btn btn-sm btn-success">Ish qo‘shish</a>
+                    <td class="action-btns">
+                        <a href="{% url 'manager:worker_detail' stat.worker.id %}" class="btn-nav btn-view" title="Ko‘rish">
+                            <i class="fas fa-eye"></i>
+                        </a>
+                        <a href="{% url 'manager:m_chat' stat.worker.worker_id %}" class="btn-nav btn-chat" title="Xabar yozish">
+                            <i class="fas fa-comment"></i>
+                        </a>
+                        <a href="{% url 'manager:add_daily_work' %}" class="btn-nav btn-work" title="Ish qo‘shish">
+                            <i class="fas fa-briefcase"></i>
+                        </a>
                     </td>
                 </tr>
                 {% empty %}
                 <tr>
-                    <td colspan="8" class="text-center no-data">Sizda hozircha ishchi yo‘q.</td>
+                    <td colspan="8" class="no-data">Sizda hozircha ishchi yo‘q.</td>
                 </tr>
                 {% endfor %}
             </tbody>
         </table>
     </div>
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+    <script>
+        document.querySelectorAll('.btn-nav').forEach(btn => {
+            btn.addEventListener('mouseenter', () => {
+                btn.style.animation = 'pulse 0.6s ease-in-out';
+            });
+            btn.addEventListener('animationend', () => {
+                btn.style.animation = '';
+            });
+        });
+    </script>
 </body>
 </html>
