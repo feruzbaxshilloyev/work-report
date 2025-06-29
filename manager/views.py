@@ -1,7 +1,7 @@
 from django.contrib.auth.decorators import login_required
 from django.core.paginator import Paginator
 from django.db.models import Q
-from django.http import HttpResponseForbidden, JsonResponse
+from django.http import HttpResponseForbidden, JsonResponse, HttpResponse
 from django.shortcuts import render, redirect, get_object_or_404
 from django.contrib.auth import login, authenticate, logout
 from django.contrib.auth.forms import AuthenticationForm, UserChangeForm
@@ -89,8 +89,11 @@ def worker_list(request):
 def home(request):
     workers = Worker.objects.filter(manager=request.user)
     manager = request.user
-    wk = [i.ism + ' ' + i.familiya + str(i.worker_id) for i in workers]
-    msss = ChatMessage.objects.filter(sender__in=wk, is_read=False)
+    try:
+        wk = [i.ism + ' ' + i.familiya + str(i.worker_id) for i in workers]
+        msss = ChatMessage.objects.filter(sender__in=wk, is_read=False)
+    except Exception as e:
+        return HttpResponse(f"Xatolik: {e}")
     st = set()
     for i in msss:
         st.add(i.sender)
