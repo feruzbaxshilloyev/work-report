@@ -70,10 +70,10 @@ def add_worker(request):
             worker.save()
 
             messages.success(request, f"Ishchi {worker.ism} muvaffaqiyatli qo‘shildi! Parol: {worker.password}")
-            print(f"Ishchi {worker.ism} muvaffaqiyatli qo‘shildi! Parol: {worker.password}")
+            # print(f"Ishchi {worker.ism} muvaffaqiyatli qo‘shildi! Parol: {worker.password}")
             return redirect('manager:profil')
         except Exception as e:
-            print(e)
+            # print(e)
             messages.error(request, f"Ishchi qo‘shishda xato: {e}")
 
     return render(request, 'add_worker.html')
@@ -99,7 +99,6 @@ def home(request):
     wun = -1
     for _ in st:
         wun += 1
-    print(wun)
     for worker in workers:
         kunliklar = DailyWork.objects.filter(worker=worker)
         jami_mahsulot = sum([float(d.umumiy_mahsulot) for d in kunliklar])
@@ -434,10 +433,10 @@ def tolow(request, w_id):
     qoldiq = worker.qoldiq
 
     if request.method == 'POST':
-        print("POST so‘rov")
+        # print("POST so‘rov")
         form = TolowForm(data=request.POST, worker_id=w_id)
         if form.is_valid():
-            print("Forma valid")
+            # print("Forma valid")
             instance = form.save(commit=False)
             if worker.manager != request.user:
                 messages.error(request, "Siz bu ishchiga to‘lov kiritolmaysiz.")
@@ -446,11 +445,11 @@ def tolow(request, w_id):
             instance.save()
             messages.success(request, "To‘lov muvaffaqiyatli qo‘shildi.")
             return redirect('manager:worker_detail', worker_id=worker.id)
-        else:
-            print("Forma xatolari:", form.errors)
+        # else:
+        #     print("Forma xatolari:", form.errors)
     else:
         form = TolowForm(worker_id=w_id)
-        print("GET so‘rov")
+        # print("GET so‘rov")
 
     return render(request, 'tolow.html', {
         'form': form,
