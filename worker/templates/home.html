@@ -98,8 +98,6 @@
 <body>
 
 <div class="container">
-    <h2 class="mb-4 text-center">Xush kelibsiz, {{ user.username }}!</h2>
-
     <div class="card">
         <div class="card-header">
             <i class="fas fa-id-badge me-2"></i> Profil ma'lumotlari
@@ -111,7 +109,7 @@
 
             <div class="d-grid gap-3 mt-4">
                 <a href="{% url 'worker:worker_profile' worker.worker_id %}" class="btn btn-primary">
-                    🏠 Bosh sahifaga o'tish
+                    🏠 Bosh sahifa
                 </a>
                 <a href="{% url 'worker:update_pass' worker.worker_id %}" class="btn btn-success">
                     ✏️ Parolni o'zgartirish
