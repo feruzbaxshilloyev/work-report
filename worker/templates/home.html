@@ -5,65 +5,92 @@
     <title>Ishchi Bosh Sahifa</title>
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
     <style>
         body {
-            background: #f2f4f8;
-            font-family: "Segoe UI", Tahoma, Geneva, Verdana, sans-serif;
+            background: linear-gradient(135deg, #2a4365, #4c8bf5);
+            min-height: 100vh;
+            padding: 2rem 0;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            color: #e2e8f0;
         }
         .container {
             max-width: 600px;
-            margin: auto;
-            padding: 20px 15px;
-        }
-        h2 {
-            color: #343a40;
-            font-weight: bold;
         }
         .card {
-            border-radius: 12px;
-            box-shadow: 0 4px 10px rgba(0,0,0,0.05);
+            border-radius: 1.5rem;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.2);
+            background: #ffffff;
+            animation: fadeIn 1s ease-in-out;
+            padding: 2rem;
         }
         .card-header {
-            background-color: #007bff;
+            background: linear-gradient(90deg, #1e3a8a, #3b82f6);
             color: white;
-            font-weight: 600;
+            font-weight: bold;
             font-size: 1.1rem;
-            border-top-left-radius: 12px;
-            border-top-right-radius: 12px;
+            border-radius: 1rem 1rem 0 0;
+            padding: 1rem 1.25rem;
         }
-        .card-body h5 {
-            font-size: 1.2rem;
+        h2 {
+            color: #ffffff;
+            font-weight: 700;
+            text-shadow: 0 1px 3px rgba(0,0,0,0.3);
+            font-size: 1.75rem;
+        }
+        .card-title {
+            font-size: 1.3rem;
             font-weight: 600;
-            color: #0056b3;
+            color: #1e3a8a;
         }
         .card-text {
-            font-size: 0.95rem;
-            color: #555;
+            font-size: 1rem;
+            color: #475569;
+            margin-bottom: 0.6rem;
         }
         .d-grid .btn {
-            font-weight: 500;
+            font-weight: 600;
+            font-size: 1rem;
             padding: 12px;
-            font-size: 0.95rem;
+            border-radius: 0.75rem;
+            transition: all 0.3s ease;
         }
         .btn-primary {
-            background-color: #007bff;
+            background-color: #3b82f6;
             border: none;
+        }
+        .btn-primary:hover {
+            background-color: #2563eb;
         }
         .btn-success {
-            background-color: #28a745;
+            background-color: #10b981;
             border: none;
+        }
+        .btn-success:hover {
+            background-color: #047857;
         }
         .btn-danger {
-            background-color: #dc3545;
+            background-color: #ef4444;
             border: none;
         }
+        .btn-danger:hover {
+            background-color: #b91c1c;
+        }
+        @keyframes fadeIn {
+            from { opacity: 0; transform: scale(0.95); }
+            to { opacity: 1; transform: scale(1); }
+        }
         @media (max-width: 576px) {
-            .d-grid .btn {
-                width: 100%;
-                margin-bottom: 10px;
-            }
             h2 {
                 font-size: 1.5rem;
+                text-align: center;
+            }
+            .card-title {
+                font-size: 1.1rem;
+            }
+            .d-grid .btn {
+                font-size: 0.95rem;
+                padding: 10px;
             }
         }
     </style>
@@ -75,17 +102,23 @@
 
     <div class="card">
         <div class="card-header">
-            Profil ma'lumotlari
+            <i class="fas fa-id-badge me-2"></i> Profil ma'lumotlari
         </div>
         <div class="card-body">
             <h5 class="card-title">👤 {{ worker.ism.capitalize }} {{ worker.familiya.capitalize }}</h5>
             <p class="card-text">🆔 ID: <strong>{{ worker.worker_id }}</strong></p>
             <p class="card-text">🔑 Parol: <strong>{{ worker.password }}</strong></p>
 
-            <div class="d-grid gap-2 mt-4">
-                <a href="{% url 'worker:worker_profile' worker.worker_id %}" class="btn btn-primary">🏠 Bosh sahifaga o'tish</a>
-                <a href="{% url 'worker:update_pass' worker.worker_id %}" class="btn btn-success">✏️ Parolni o'zgartirish</a>
-                <a href="{% url 'worker:worker_logout' worker.worker_id %}" class="btn btn-danger">🚪 Chiqish</a>
+            <div class="d-grid gap-3 mt-4">
+                <a href="{% url 'worker:worker_profile' worker.worker_id %}" class="btn btn-primary">
+                    🏠 Bosh sahifaga o'tish
+                </a>
+                <a href="{% url 'worker:update_pass' worker.worker_id %}" class="btn btn-success">
+                    ✏️ Parolni o'zgartirish
+                </a>
+                <a href="{% url 'worker:worker_logout' worker.worker_id %}" class="btn btn-danger">
+                    🚪 Chiqish
+                </a>
             </div>
         </div>
     </div>
